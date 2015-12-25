@@ -1,0 +1,359 @@
+body {
+	width: 100%;
+	font-family: monospace;
+}
+
+* {
+	margin: 0px;
+	padding: 0xp;
+}
+
+button:focus {
+	outline:none;
+}
+
+a {
+	text-decoration: none;
+	color: #000;
+}
+
+*:focus {
+    outline: 0;
+}
+
+.clear {
+	clear: both;
+}
+
+#outterBox{
+	position: absolute;
+	top: 0px;
+	bottom: 20px;
+	width: 100%;
+}
+
+#footer{
+	position: absolute;
+	bottom: 0px;
+	width: calc(100% - 10px);
+	height: 20px;
+	background-color: #303030;
+	text-align: right;
+	font-size: 12px;
+	color: #FFFFFF;
+	line-height: 20px;
+	padding-right: 10px;
+}
+/* ---------------MAIN WINDOW---------------- */
+#mainWindow {
+	width: 100%;
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+}
+#mainWindowNavi {
+	height: 55px;
+	font-size: 20px;
+	line-height: 50px;
+	text-align: right;
+	background-color: #303030;
+	color: #FFFFFF;
+	-moz-user-select: none; 
+	-khtml-user-select: none; 
+	-webkit-user-select: none; 
+	-o-user-select: none; 
+}
+
+#mainWindowBody {
+	width: 100%;
+	position: absolute;
+	top: 80px;
+	bottom: 30px;
+	overflow: auto;
+}
+
+#bottomInfoBar {
+	width: calc(100% - 20px);
+	height: 30px;
+	position: absolute;
+	bottom: 0px;
+	line-height: 30px;
+	text-align: right;
+	padding-right: 15px;
+	background-color: #CCC;
+	padding-left: 5px;
+}
+
+/* BUTTONS */
+
+.btnLarge {
+	width: 50px;
+	height: 50px;
+	display: block;
+	color: #CFCFCF;
+}
+
+.btnLargeText {
+	color: #303030;
+}
+
+.btnLarge i:hover {
+	color: #FFF;
+}
+
+.btnLarge:hover {
+ color: #089BCC;
+}
+
+.btnSmall {
+	width: 26px;
+	height: 26px;
+	font-size: 10px;
+	color: #CFCFCF;
+}
+
+.btnSmallText {
+	color: #FFF;
+}
+
+.btnSmall i:hover {
+	
+}
+
+.btnSmall:hover {
+ color: #089BCC;
+}
+
+
+.btnCol01 {
+	background-color: #FFF;
+	border: 1px solid #CCC;
+	color: #888;
+}
+
+.recordBlock {
+	width: 90%;
+	height: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	background-color: #2E2E2E;
+	line-height: 20px;
+	border-radius: 5px;
+	padding: 2%;
+	color: #FFF;
+}
+/* -------------------------------------------
+RECORD INPUT
+------------------------------------------- */
+.recordImageWrapperContainer{
+	width: 100%;
+	height: 100px;
+	float: left;
+}
+.recordImageWrapper {
+	width:90px;
+	height:90px;
+	margin:5px;
+	background-color: #CCC;
+	float: left;
+}
+/* -------------------------------------------
+DIALOG BOXES
+------------------------------------------- */
+
+#addNewClaimPopup {
+	border-collapse: collapse;
+}
+
+#addNewClaimPopup td {
+	border: none;
+	padding: 5px;
+	text-align: center;
+}
+
+#addNewClaimPopup input{
+	width: 100%;
+}
+
+
+/* THIS IS WHERE THE NEW CSS STARTS*/
+/*---------------------------------*/
+/* RECORD WRAPPER*/
+.recordWrapper {
+	width: 100%;
+	height: auto;
+}
+/*---------------------------------*/
+/* RECORD HEADER*/
+#recordHeaderTop{
+	width: calc (100% - 10px);
+	height: 25px;
+	line-height: 25px;
+	background-color:#7e7e7e;
+	color: #FFF;
+}
+.recordHeader{
+	width: 100%;
+	height: 25px;
+	line-height: 25px;
+	outline: solid 1px #000;
+}
+/*---------------------------------*/
+/* RECORD IMAGES*/
+.recordImages{
+	width: 66.666%;
+	height: 100px;
+	outline: solid 1px #ccc;
+	float: left;
+	overflow-x: hidden;
+}
+/*---------------------------------*/
+/* RECORD BODY*/
+.recordBody{
+	width: 100%;
+	height: auto;
+	outline: solid 0px #000;
+}
+/*---------------------------------*/
+/* RECORD BODY BOX*/
+.recordBodyBox{
+	width: 33.333%;
+	float: left;
+	outline: 0px solid black;
+}
+
+.recordBody input, select{
+	width: 100%;
+	height: 100%;
+	border: none;
+	background-color:#DEDEDE;
+	font-family: monospace;
+}
+
+.recordBodyBox table{
+	width: 100%;
+	height: 100%;
+	border-collapse: collapse;
+}
+
+.recordBodyBox th, td {
+	text-align: left;
+	height: 20%;
+}
+
+.recordBodyBox th {
+	width: 50%;
+}
+
+.recordBodyBox td {
+	width: 50%;
+}
+
+.recordOtherFilesBox {
+	width: 16.666665%; 
+	height: 100px; 
+	overflow-x: hidden; 
+	float: right; 
+	white-space: nowrap;
+}
+
+.recordOtherFilesBox a{
+	margin-left: 5px;
+}
+
+
+/*---------------------------------*/
+/* RECORD SPACER*/
+.recordSpacer {
+	width: 100%;
+	height: 10px;
+	background-color: #363636;
+}
+/*---------------------------------*/
+/* MESSAGE BOX*/
+#messageBox {
+	width: 250px;
+	height: 25px;
+	font-family: monospace;
+	font-size: 16px;
+	z-index: 100;
+	position: absolute;
+	top: 15px;
+	left: calc(50% - 125px);
+	background-color: #888;
+	border: 2px solid #CCC;
+	text-align: center;
+	line-height: 25px;
+}
+
+#infoBox {
+	width: 250px;
+	height: 25px;
+	font-family: monospace;
+	font-size: 16px;
+	z-index: 101;
+	position: absolute;
+	top: 15px;
+	left: calc(50% - 125px);
+	background-color: forestgreen;
+	border: 2px solid darkgreen;
+	text-align: center;
+	line-height: 25px;
+}
+
+/*---------------------------------*/
+/* LOADING SCREEN*/
+
+#loading {
+  position: absolute;
+  z-index: 9000;
+  width: 100%;
+  top: 0px;
+  bottom: 20px;
+  background-color: none;
+}
+  
+#loadingInner {
+  position: absolute;
+  z-index: 9000;
+  width: 100%;
+  top: 55px;
+  bottom: 0px;
+  background-color: #FFF;
+}
+
+.loadingGifMain {
+    background-color: #FFF;
+    width: 150px;
+    height: 10px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -75px;
+    margin-top: -10px;
+    text-align: center;
+}
+
+/*---------------------------------*/
+/* EDIT FILES */
+
+.editFileCog {
+	display: block;
+	float: right;
+	margin-right: 5px;
+	color: #FFF;
+	font-size: 12px;
+	line-height: 16px;
+}
+
+.editFileCog:hover {
+	color: #303030;
+	cursor: pointer;
+}
+
+.removeRecord {
+	color: crimson;
+}
