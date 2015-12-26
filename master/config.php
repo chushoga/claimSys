@@ -39,7 +39,9 @@
 <script type="text/javascript" src="<?php echo $path;?>/js/keyboardShortcuts/jquery.key.js"></script>
 
 <!-- jspdf -->
-
+<script type="text/javascript" src="<?php echo $path;?>/js/jsPDF/jspdf.js"></script>
+<script type="text/javascript" src="<?php echo $path;?>/js/jsPDF/BlobBuilder.js"></script>
+<script type="text/javascript" src="<?php echo $path;?>/js/jsPDF/FileSaver.js"></script>
 
 <?php 
 //SET BASE PAGE FILE NAME:

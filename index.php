@@ -74,7 +74,15 @@ include_once '/master/config.php'; ?>
 
 						// save images to pdf
 						$('#downloadPdfBtn').click(function() {
-							alert("SAVE FUNCTION");
+								
+								var doc = new jsPDF();
+								doc.text(20, 20, 'Hello world!');
+								doc.text(20, 30, 'This is client-side Javascript, pumping out a PDF.');
+								doc.addPage();
+								doc.text(20, 20, 'Do you like that?');
+
+								doc.save('Test.pdf');
+							
 						});
 
 						//change input to uppercase
@@ -151,8 +159,8 @@ include_once '/master/config.php'; ?>
 													$("#infoBox").text("Record block " + rid + " Removed!!").delay(4000).fadeOut(); // add the info of from the title
 												}
 											});
-
-											$("#recId_" + rid).remove(); // remove the record block from view
+											$("#recId_" + rid).slideUp(300, function(){$("#recId_" + rid).remove(); });
+											//$("#recId_" + rid).remove(); // remove the record block from view
 										},
 										No: function() {
 											$(this).dialog("close");
@@ -340,7 +348,6 @@ include_once '/master/config.php'; ?>
 						start();
 						update();
 						
-										
 					});
 				</script>
 
@@ -687,6 +694,26 @@ include_once '/master/config.php'; ?>
 
 											}
 										};
+										
+										// save images to pdf
+										$('#downloadPdfBtn').click(function() {
+											var recordBlockId = "<?php echo $records_id;?>";
+											var cid = "&cid=" + <?php echo $recMasterId;?>;
+											
+											var damageId = "1";
+											var modelNo = "23";
+											var tformNo = "55";
+
+												var doc = new jsPDF();
+												doc.text(20, 20, '1');
+												doc.text(20, 30, '2');
+												doc.addPage();
+												doc.text(20, 20, '4');
+												doc.text(30, 30, 'Do you like that?');
+
+												doc.save("../"recordBlockId+'.pdf');
+
+										});
 									</script>
 									<?php
 								
