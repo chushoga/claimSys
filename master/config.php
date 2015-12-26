@@ -39,9 +39,17 @@
 <script type="text/javascript" src="<?php echo $path;?>/js/keyboardShortcuts/jquery.key.js"></script>
 
 <!-- jspdf -->
+
 <script type="text/javascript" src="<?php echo $path;?>/js/jsPDF/jspdf.js"></script>
+
 <script type="text/javascript" src="<?php echo $path;?>/js/jsPDF/BlobBuilder.js"></script>
+<script type="text/javascript" src="<?php echo $path;?>/js/jsPDF/adler32cs.js"></script>
 <script type="text/javascript" src="<?php echo $path;?>/js/jsPDF/FileSaver.js"></script>
+
+<script type="text/javascript" src="<?php echo $path;?>/js/jsPDF/jspdf.plugin.from_html.js"></script>
+<script type="text/javascript" src="<?php echo $path;?>/js/jsPDF/jspdf.plugin.split_text_to_size.js"></script>
+<script type="text/javascript" src="<?php echo $path;?>/js/jsPDF/jspdf.plugin.standard_fonts_metrics.js"></script>
+<script type="text/javascript" src="<?php echo $path;?>/js/jsPDF/jspdf.plugin.addimage.js"></script>
 
 <?php 
 //SET BASE PAGE FILE NAME:

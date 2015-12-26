@@ -73,7 +73,7 @@ include_once '/master/config.php'; ?>
 						});
 
 						// save images to pdf
-						$('#downloadPdfBtn').click(function() {
+						$('#downloadBtn').click(function() {
 								
 								var doc = new jsPDF();
 								doc.text(20, 20, 'Hello world!');
@@ -463,7 +463,7 @@ include_once '/master/config.php'; ?>
 										</a>
 
 										<!-- DOWNLOAD -->
-										<a href='#' id='downloadPdfBtn' class='btnLarge' style='float: left;' data-tooltip='Download PDF, EXEL, PRINT'>
+										<a href='#' id='downloadBtn' class='btnLarge' style='float: left;' data-tooltip='Download PDF, EXEL, PRINT'>
 											<span class="btn fa-stack fa-lg" style=''>
 									<i class="fa fa-square fa-stack-2x"></i>
 									<i class="fa fa-cloud-download fa-stack-1x fa-inverse btnLargeText"></i>
@@ -568,162 +568,19 @@ include_once '/master/config.php'; ?>
 								echo "<input type='hidden' name='recordBlockId_$records_id' id='recordBlockId_$records_id' value='$records_id'>";
 								// *************************************************************************************************************
 								
-								?>
-									<script type="text/javascript">
-											
-										// get data from database
-										// WORK ON GETTING THIS WORKING WITH THE IMAGES BEING UPDATED AFTER UPLOAD!!
-
-										function refreshImageBlock_<?php echo $records_id; ?>() {
-
-											var recordBlockId = "<?php echo $records_id;?>";
-											var cid = "&cid=" + <?php echo $recMasterId;?>;
-
-											$.ajax({
-												type: "post",
-												url: "exe/process.php",
-												data: "action=refreshImageBlock" + "&recordBlockId=" + recordBlockId + cid,
-												success: function(data) {
-													$("#recordImages_" + <?php echo $records_id; ?>).html(data);
-													//alert("error");
-												},
-												error: function(err) {
-													alert("error");
-												}
-											});
-										}
-
-										function refreshFilesBlock_<?php echo $records_id; ?>() {
-
-											var recordBlockId = "<?php echo $records_id;?>";
-											var cid = "&cid=" + <?php echo $recMasterId;?>;
-
-											$.ajax({
-												type: "post",
-												url: "exe/process.php",
-												data: "action=refreshFilesBlock" + "&recordBlockId=" + recordBlockId + cid,
-												success: function(data) {
-													$("#recordFiles_" + <?php echo $records_id; ?>).html(data);
-												},
-												error: function(err) {
-													alert("error");
-												}
-											});
-
-										}
-
-
-										//showComment();
-
-										// send data to database
-
-										//$('[type=text]').change(function(){
-
-										var saveMe_<?php echo $records_id; ?> = function() {
-
-											var recordBlockId = "<?php echo $records_id;?>";
-											var dropzoneId = "#dropzone_" + recordBlockId
-
-
-											var damageId = "damageId_" + recordBlockId + "=" + $("#damageId_" + recordBlockId).val();
-											var modelNo = "&modelNo_" + recordBlockId + "=" + $("#modelNo_" + recordBlockId).val();
-											var tformNo = "&tformNo_" + recordBlockId + "=" + $("#tformNo_" + recordBlockId).val();
-											var orderNo = "&orderNo_" + recordBlockId + "=" + $("#orderNo_" + recordBlockId).val();
-
-											var spec = "&spec_" + recordBlockId + "=" + $("#spec_" + recordBlockId).val();
-											var invoiceNo = "&invoiceNo_" + recordBlockId + "=" + $("#invoiceNo_" + recordBlockId).val();
-											var invoiceDate = "&invoiceDate_" + recordBlockId + "=" + $("#invoiceDate_" + recordBlockId).val();
-											var invoiceGntNo = "&invoiceGntNo_" + recordBlockId + "=" + $("#invoiceGntNo_" + recordBlockId).val();
-											var currency = "&currency_" + recordBlockId + "=" + $("#currency_" + recordBlockId).val();
-											var invoiceValue = "&invoiceValue_" + recordBlockId + "=" + $("#invoiceValue_" + recordBlockId).val();
-
-											var damageType = "&damageType_" + recordBlockId + "=" + $("#damageType_" + recordBlockId).val();
-											var damageSize = "&damageSize_" + recordBlockId + "=" + $("#damageSize_" + recordBlockId).val();
-											var damageMemoEn = "&damageMemoEn_" + recordBlockId + "=" + $("#damageMemoEn_" + recordBlockId).val();
-											var damageMemoJp = "&damageMemoJp_" + recordBlockId + "=" + $("#damageMemoJp_" + recordBlockId).val();
-											var flgPending = "&flgPending_" + recordBlockId + "=" + $("#flgPending_" + recordBlockId).val();
-
-											var editedBy = "&editedBy_" + recordBlockId + "=" + localStorage.getItem("userName");
-											var cid = "&cid=" + <?php echo $recMasterId;?>;
-
-											//alert ("damageId: " + damageId + " - " + "modelNo: " + modelNo + "recordBlockId: " + recordBlockId);
-
-											$.ajax({
-												type: "post",
-												url: "exe/process.php",
-												data: damageId + modelNo + tformNo + orderNo + spec + invoiceNo + invoiceDate + invoiceGntNo + currency + invoiceValue + damageType + damageSize + damageMemoEn + damageMemoJp + flgPending + editedBy + cid + "&action=addcomment" + "&recordBlockId=" + recordBlockId,
-												success: function(data) {
-													refreshImageBlock_<?php echo $records_id; ?>();
-													refreshFilesBlock_<?php echo $records_id; ?>();
-												}
-											});
-
-											// change saved color back to normal
-											$('#recordHeaderTop').css("background", "green");
-
-										}
-
-										$("#saveBtn").click(function(){
-											saveMe_<?php echo $records_id; ?>();
-										}); // on click of the save button save the block
-
-										// on save keybind of save button run the save me function
-										$(document).bind('keydown', function(e) {
-											if (e.ctrlKey && (e.which == 83)) {
-												saveMe_<?php echo $records_id; ?>(); // run the save function
-											}
-										});
-
-										Dropzone.options.myAwesomeDropzone<?php echo $records_id; ?> = {
-											maxFiles: 50,
-											accept: function(file, done) {
-												console.log("uploaded");
-												done();
-											},
-											init: function() {
-												this.on("maxfilesexceeded", function(file) {
-														alert("No more files please!");
-													}),
-
-													this.on("complete", function(file) {
-														this.removeFile(file); // remove thumbnails after upload
-
-														saveMe_<?php echo $records_id; ?>(); // run the save function
-
-													});
-
-											}
-										};
-										
-										// save images to pdf
-										$('#downloadPdfBtn').click(function() {
-											var recordBlockId = "<?php echo $records_id;?>";
-											var cid = "&cid=" + <?php echo $recMasterId;?>;
-											
-											var damageId = "1";
-											var modelNo = "23";
-											var tformNo = "55";
-
-												var doc = new jsPDF();
-												doc.text(20, 20, '1');
-												doc.text(20, 30, '2');
-												doc.addPage();
-												doc.text(20, 20, '4');
-												doc.text(30, 30, 'Do you like that?');
-
-												doc.save("../"recordBlockId+'.pdf');
-
-										});
-									</script>
-									<?php
-								
-								// *************************************************************************************************************
-								
 									echo "
 									<div class='recordWrapper' id='recId_".$records_id."'>
-										<div class='recordHeader'><span style='margin-left: 5px;'>[ $records_id ]PENDING...</span><span style='float: right; margin-right: 5px;'>
-										<a href='#' class='removeRecord' id='$records_id'> DELETE <i class='fa fa-trash-o'></i></a>
-										</span></div>
+										<div class='recordHeader'><span style='margin-left: 5px;'>[ $records_id ]PENDING...</span>
+										
+											<span style='float: right; margin-right: 5px;'>
+												<a href='#' class='removeRecord' id='$records_id'> DELETE <i class='fa fa-trash-o'></i></a>
+											</span>
+											
+											<span style='float: right; margin-right: 10px;'>
+												<a href='#' class='pdfDownload' id='downloadPdfBtn$records_id'>PDF <i class='fa fa-save'></i></a> | 
+											</span>
+											
+										</div>
 										
 										<div id='recordImages_".$records_id."' class='recordImages customScrollbar'>";
 								
@@ -904,7 +761,245 @@ include_once '/master/config.php'; ?>
 									</div>
 									";
 									echo "";
+								
+									// *************************************************************************************************************
+									// JAVASCRIPT
+									// *************************************************************************************************************
+								?>
+								<script type="text/javascript">
+									// get data from database
+									// WORK ON GETTING THIS WORKING WITH THE IMAGES BEING UPDATED AFTER UPLOAD!!
+
+									function refreshImageBlock_<?php echo $records_id; ?>() {
+
+										var recordBlockId = "<?php echo $records_id;?>";
+										var cid = "&cid=" + <?php echo $recMasterId;?>;
+
+										$.ajax({
+											type: "post",
+											url: "exe/process.php",
+											data: "action=refreshImageBlock" + "&recordBlockId=" + recordBlockId + cid,
+											success: function(data) {
+												$("#recordImages_" + <?php echo $records_id; ?>).html(data);
+												//alert("error");
+											},
+											error: function(err) {
+												alert("error");
+											}
+										});
+									}
+
+									function refreshFilesBlock_<?php echo $records_id; ?>() {
+
+										var recordBlockId = "<?php echo $records_id;?>";
+										var cid = "&cid=" + <?php echo $recMasterId;?>;
+
+										$.ajax({
+											type: "post",
+											url: "exe/process.php",
+											data: "action=refreshFilesBlock" + "&recordBlockId=" + recordBlockId + cid,
+											success: function(data) {
+												$("#recordFiles_" + <?php echo $records_id; ?>).html(data);
+											},
+											error: function(err) {
+												alert("error");
+											}
+										});
+
+									}
+
+
+									//showComment();
+
 									
+									var saveMe_<?php echo $records_id; ?> = function() {
+
+										var recordBlockId = "<?php echo $records_id;?>";
+										var dropzoneId = "#dropzone_" + recordBlockId
+
+
+										var damageId = "damageId_" + recordBlockId + "=" + $("#damageId_" + recordBlockId).val();
+										var modelNo = "&modelNo_" + recordBlockId + "=" + $("#modelNo_" + recordBlockId).val();
+										var tformNo = "&tformNo_" + recordBlockId + "=" + $("#tformNo_" + recordBlockId).val();
+										var orderNo = "&orderNo_" + recordBlockId + "=" + $("#orderNo_" + recordBlockId).val();
+
+										var spec = "&spec_" + recordBlockId + "=" + $("#spec_" + recordBlockId).val();
+										var invoiceNo = "&invoiceNo_" + recordBlockId + "=" + $("#invoiceNo_" + recordBlockId).val();
+										var invoiceDate = "&invoiceDate_" + recordBlockId + "=" + $("#invoiceDate_" + recordBlockId).val();
+										var invoiceGntNo = "&invoiceGntNo_" + recordBlockId + "=" + $("#invoiceGntNo_" + recordBlockId).val();
+										var currency = "&currency_" + recordBlockId + "=" + $("#currency_" + recordBlockId).val();
+										var invoiceValue = "&invoiceValue_" + recordBlockId + "=" + $("#invoiceValue_" + recordBlockId).val();
+
+										var damageType = "&damageType_" + recordBlockId + "=" + $("#damageType_" + recordBlockId).val();
+										var damageSize = "&damageSize_" + recordBlockId + "=" + $("#damageSize_" + recordBlockId).val();
+										var damageMemoEn = "&damageMemoEn_" + recordBlockId + "=" + $("#damageMemoEn_" + recordBlockId).val();
+										var damageMemoJp = "&damageMemoJp_" + recordBlockId + "=" + $("#damageMemoJp_" + recordBlockId).val();
+										var flgPending = "&flgPending_" + recordBlockId + "=" + $("#flgPending_" + recordBlockId).val();
+
+										var editedBy = "&editedBy_" + recordBlockId + "=" + localStorage.getItem("userName");
+										var cid = "&cid=" + <?php echo $recMasterId;?>;
+
+										//alert ("damageId: " + damageId + " - " + "modelNo: " + modelNo + "recordBlockId: " + recordBlockId);
+
+										$.ajax({
+											type: "post",
+											url: "exe/process.php",
+											data: damageId + modelNo + tformNo + orderNo + spec + invoiceNo + invoiceDate + invoiceGntNo + currency + invoiceValue + damageType + damageSize + damageMemoEn + damageMemoJp + flgPending + editedBy + cid + "&action=addcomment" + "&recordBlockId=" + recordBlockId,
+											success: function(data) {
+												refreshImageBlock_<?php echo $records_id; ?>();
+												refreshFilesBlock_<?php echo $records_id; ?>();
+											}
+										});
+
+										// change saved color back to normal
+										$('#recordHeaderTop').css("background", "green");
+
+									}
+
+									$("#saveBtn").click(function(){
+										saveMe_<?php echo $records_id; ?>();
+									}); // on click of the save button save the block
+
+									// on save keybind of save button run the save me function
+									$(document).bind('keydown', function(e) {
+										if (e.ctrlKey && (e.which == 83)) {
+											saveMe_<?php echo $records_id; ?>(); // run the save function
+										}
+									});
+
+									Dropzone.options.myAwesomeDropzone<?php echo $records_id; ?> = {
+										maxFiles: 50,
+										accept: function(file, done) {
+											console.log("uploaded");
+											done();
+										},
+										init: function() {
+											this.on("maxfilesexceeded", function(file) {
+													alert("No more files please!");
+												}),
+
+												this.on("complete", function(file) {
+													this.removeFile(file); // remove thumbnails after upload
+
+													saveMe_<?php echo $records_id; ?>(); // run the save function
+
+												});
+
+										}
+									};
+									
+									
+									$('#downloadPdfBtn<?php echo $records_id; ?>').click(function() {
+										
+										// Because of security restrictions, getImageFromUrl will
+										// not load images from other domains.  Chrome has added
+										// security restrictions that prevent it from loading images
+										// when running local files.  Run with: chromium --allow-file-access-from-files --allow-file-access
+										// to temporarily get around this issue.
+										var getImageFromUrl = function(url, callback) {
+
+
+											var img = new Image, data, ret={data: null, pending: true};
+
+											img.onError = function() {
+												throw new Error('Cannot load image: "'+url+'"');
+											}
+											img.onload = function() {
+												var canvas = document.createElement('canvas');
+												document.body.appendChild(canvas);
+												canvas.width = img.width;
+												canvas.height = img.height;
+
+												var ctx = canvas.getContext('2d');
+												ctx.drawImage(img, 0, 0);
+												// Grab the image as a jpeg encoded in base64, but only the data
+												data = canvas.toDataURL('image/jpeg').slice('data:image/jpeg;base64,'.length);
+												// Convert the data to binary form
+												data = atob(data)
+												document.body.removeChild(canvas);
+
+												ret['data'] = data;
+												ret['pending'] = false;
+												if (typeof callback === 'function') {
+													callback(data);
+												}
+											}
+											img.src = url;
+
+											return ret;
+										}
+
+										// Since images are loaded asyncronously, we must wait to create
+										// the pdf until we actually have the image data.
+										// If we already had the jpeg image binary data loaded into
+										// a string, we create the pdf without delay.
+										var createPDF = function(imgData) {
+											
+											var recordBlockId = "<?php echo $records_id;?>";
+
+											var damageId = "<?php echo $records_id_dmg;?>";
+											var modelNo = "<?php echo $records_modelNo;?>";
+											var headerMemo = damageId + " [ " + modelNo + " ]";
+
+											var imgWidth = 450;
+											var imgHeight = 338.8235294117647;
+											
+											var img1X = 60;
+											var img1Y = 50;
+											
+											var img2X = 60;
+											var img2Y = 100+imgHeight;
+
+											var doc = new jsPDF("p", "pt", "a4");
+
+											doc.text(180, 30, headerMemo); // add the header title
+
+											doc.addImage(imgData, 'JPEG', img1X, img1Y, imgWidth, imgHeight); // first image
+
+											doc.addImage(imgData, 'JPEG', img2X, img2Y, imgWidth, imgHeight); // second image
+											//doc.addImage(imgData, 'JPEG', 70, 10, 100, 120);
+											
+											doc.addPage();
+											doc.text(180, 30, headerMemo);
+											doc.text(30, 60, 'Do you like that?');
+											
+											
+											// Output as Data URI
+											doc.output('datauri');
+
+										}
+
+										getImageFromUrl('recordFiles/20/507/IMG_1623.jpg', createPDF);
+										getImageFromUrl('recordFiles/20/507/IMG_1624.jpg', createPDF);
+									});
+
+									// -------------------------------------------------------------------------------
+									
+									// save images to pdf
+										$('#downloadPdfBtn1111<?php echo $records_id; ?>').click(function() {
+											
+											var recordBlockId = "<?php echo $records_id;?>";
+											var cid = "&cid=" + <?php echo $recMasterId;?>;
+											
+											var damageId = "<?php echo $records_id_dmg;?>";
+											var modelNo = "<?php echo $records_modelNo;?>";
+											//var tformNo = "<?php echo $records_tformNo;?>";
+											
+											var headerMemo = damageId + " [ " + modelNo + " ]";
+
+												var doc = new jsPDF();
+											
+												doc.text(70, 15, headerMemo);
+												doc.addPage();
+												doc.text(20, 20, headerMemo);
+												doc.text(30, 30, 'Do you like that?');
+
+												doc.save(recordBlockId+'.pdf');
+	
+										});
+								
+								</script>
+								<?php
 								
 								// *************************************************************************************************************
 								
