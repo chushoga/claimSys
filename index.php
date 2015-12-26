@@ -889,7 +889,7 @@ include_once '/master/config.php'; ?>
 									};
 									
 									
-									$('#downloadPdfBtn<?php echo $records_id; ?>').click(function() {
+									$('#downloadPdfBtn111<?php echo $records_id; ?>').click(function() {
 										
 										// Because of security restrictions, getImageFromUrl will
 										// not load images from other domains.  Chrome has added
@@ -997,6 +997,78 @@ include_once '/master/config.php'; ?>
 												doc.save(recordBlockId+'.pdf');
 	
 										});
+								// *************************************************************************************************************
+									
+									
+									$('#downloadPdfBtn<?php echo $records_id; ?>').click(function() {
+										
+										alert("test");
+										
+										var imgData;
+										var canvas;
+										var sources = {
+											base_image: 'recordFiles/20/507/IMG_1623.jpg',
+											cloud_Image: 'recordFiles/20/507/IMG_1623.jpg',
+											database_Image:'recordFiles/20/507/IMG_1623.jpg'
+										};
+
+										function loadImages(sources, callback) {
+											var images = {};
+											var loadedImages = 0;
+											var numImages = 0;
+											// get num of sources
+											for(var src in sources) {
+												numImages++;
+											}
+											for(var src in sources) {
+												images[src] = new Image();
+												images[src].onload = function() {
+													if(++loadedImages >= numImages) {
+														callback(images);
+													}
+												};
+												images[src].src = sources[src];
+											}
+										}
+
+										function savePDF(){
+
+											//load all the images first, then combine them in the callback
+											loadImages(sources, function(images) {
+												//create a canvas
+												canvas = document.createElement('canvas');
+												document.body.appendChild(canvas);
+												canvas.width = 1100;
+												canvas.height = 1700;
+
+											   //add the images
+												base_image = new Image();
+												base_image.src = 'recordFiles/20/507/IMG_1624.jpg';
+												context = canvas.getContext('2d');
+												context.drawImage(images.base_image,0,0, 1100, 1700);
+												context.drawImage(images.cloud_Image, 100, 30, 200, 137);
+												context.drawImage(images.database_Image, 350, 55, 93, 104);
+
+												//now grab the one image data for jspdf
+												imgData = canvas.toDataURL('image/jpeg');
+												
+												//imgData = canvas.toDataURL('image/jpeg').slice('data:image/jpeg;base64,'.length);
+												// Convert the data to binary form
+												//imgData = atob(imgData)
+
+												//and lose the canvas when you're done
+												document.body.removeChild(canvas);
+
+											});
+
+											var doc = new jsPDF();
+											doc.addImage(imgData, 'JPEG', 0, 0,209, 297);
+											doc.save('test2.pdf');
+										}
+										
+										savePDF();
+										
+									});
 								
 								</script>
 								<?php
