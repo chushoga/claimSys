@@ -1002,17 +1002,59 @@ include_once '/master/config.php'; ?>
 									
 									$('#downloadPdfBtn<?php echo $records_id; ?>').click(function() {
 										
-										alert("test");
+										
+										var recordBlockId = "<?php echo $records_id;?>";
+										var cid = <?php echo $recMasterId;?>;
+
+										var damageId = "<?php echo $records_id_dmg;?>";
+										var modelNo = "<?php echo $records_modelNo;?>";
+										var headerMemo = damageId + " [ " + modelNo + " ]";
 										
 										var imgData;
+										var imgData2;
 										var canvas;
+										
+										var markers = [];
+										
+										var sources = {};
+										
+										var baseImage = 'img/base.jpg';
+										
+										sources['base_image'] = baseImage;
+										<?php
+								
+											$fileLoc = 'recordFiles/'.$recMasterId.'/'.$records_id.'/';
+											$filesImages = glob($fileLoc.'*.{JPG,jpg,jpeg,JPEG,png,gif}', GLOB_BRACE);
+											
+											foreach($filesImages as $file => $value) {
+										 ?>
+											var k = "<?php echo $file; ?>";
+											var value = "<?php echo $value;?>";
+											
+										markers[k] = "";
+										
+											sources['customkey'+k] = value;
+											console.log(k + " | " + value );
+											
+										<?php
+											}
+										?>
+										console.warn(markers[2]);
+										console.log(sources);
+										
+										/*
 										var sources = {
-											base_image: 'recordFiles/20/507/IMG_1623.jpg',
-											cloud_Image: 'recordFiles/20/507/IMG_1623.jpg',
-											database_Image:'recordFiles/20/507/IMG_1623.jpg'
+											
+											cloud_Image: 'recordFiles/20/548/IMG_1813.jpg',
+											cloud_Image2: 'recordFiles/20/548/IMG_1816.jpg',
+											database_Image:'recordFiles/20/548/IMG_1814.jpg',
+											base_image: 'img/base.jpg'
 										};
+										*/
+										
 
 										function loadImages(sources, callback) {
+												
 											var images = {};
 											var loadedImages = 0;
 											var numImages = 0;
@@ -1029,44 +1071,155 @@ include_once '/master/config.php'; ?>
 												};
 												images[src].src = sources[src];
 											}
+											
 										}
 
 										function savePDF(){
-
+											
+											function ratio(w, maxW){
+												var rat = "";
+												var w, h;
+																								
+												rat = maxW / w;
+												return rat;
+											}
+											
+											
+											imgData = "";
+											imgData2 = "";
+											markers[2] = "";
+																					
 											//load all the images first, then combine them in the callback
 											loadImages(sources, function(images) {
+												
 												//create a canvas
 												canvas = document.createElement('canvas');
 												document.body.appendChild(canvas);
-												canvas.width = 1100;
-												canvas.height = 1700;
+												canvas.width = 1260;
+												canvas.height = 1782;
+												
+												var maxWidth = 950;
+												
 
 											   //add the images
 												base_image = new Image();
-												base_image.src = 'recordFiles/20/507/IMG_1624.jpg';
+												base_image.src = 'img/base.jpg';
 												context = canvas.getContext('2d');
-												context.drawImage(images.base_image,0,0, 1100, 1700);
-												context.drawImage(images.cloud_Image, 100, 30, 200, 137);
-												context.drawImage(images.database_Image, 350, 55, 93, 104);
+												
+												var ratioSize = ratio(images.customkey1.width, maxWidth);
+												var aspectRatio = images.customkey1.width / images.customkey1.height;
+												var paddingTop = 150; // set padding top
+												
+												// set padding bottom
+												// set padding left/right
+													
+												var numCounter = 0; // total number of records
+												var newPageCounter = 0; // if counter hits 2 add new page and then reset.
+												var totalPages = 0; // all pages printed
+												var newPage = false; // true/false switch if adding a new page or not.
+												
+												// -------------------------------------------------------------------
+												// ------ START OF LOOP ----------------------------------------------
+												// -------------------------------------------------------------------
+												
+												console.error("---------------------- header -------------------");
+												//context.drawImage(images.base_image,0,0, 1260, 1782); // draw base underlaying image, in this case white streched to each corner.
+												for(var src in sources) {
+													
+													if(src != 'base_image'){
+														
+														if (newPageCounter == 2){
+															newPage = true;
+														}
+																												
+														if (newPage == true){
+															console.info("*** pageBreak ***");  // add a new page
+															console.error("---------------------- header -------------------");
+															//context.drawImage(images.base_image,0,0, 1260, 1782); // draw base underlaying image, in this case white streched to each corner.
+															newPageCounter = 0;
+															newPage = false;
+															totalPages++;
+														}
+														
+														if (newPageCounter == 0) {
+															console.info("src: " + src + " | " + sources['customkey'+numCounter] + " | Current Count = " + newPageCounter); // add the images
+															//context.drawImage(images.src, 175, paddingTop, images.src.width * ratioSize, (images.src.width*ratioSize)/aspectRatio);
+														}
+														if (newPageCounter == 1) {
+															console.info("nextImage");
+															console.info("src: " + src + " | " + sources['customkey'+numCounter] + " | Current Count = " + newPageCounter); // add the images
+															//context.drawImage(images.src, 175, 950, 950, 950/aspectRatio);
+														}
+														
+														markers[newPageCounter] = canvas.toDataURL('image/jpeg').slice('data:image/jpeg;base64,'.length);
+														// Convert the data to binary form
+														markers[newPageCounter] = atob(markers[newPageCounter]);
+														
+														numCounter++;
+														newPageCounter++;
+													}
+												}
+												
+												// -------------------------------------------------------------------
+												// ------ END LOOP HERE ----------------------------------------------
+												// -------------------------------------------------------------------
+												
+												console.warn("total images: " + numCounter + " | page count: " + totalPages);
+												
+												
+												
+												context.drawImage(images.base_image,0,0, 1260, 1782); // draw base underlaying image, in this case white streched to each corner.
+												
+												context.drawImage(images.customkey0, 175, paddingTop, images.customkey0.width * ratioSize, (images.customkey0.width*ratioSize)/aspectRatio);
+												context.drawImage(images.customkey1, 175, 950, 950, 950/aspectRatio);
 
 												//now grab the one image data for jspdf
-												imgData = canvas.toDataURL('image/jpeg');
-												
-												//imgData = canvas.toDataURL('image/jpeg').slice('data:image/jpeg;base64,'.length);
+												//imgData = canvas.toDataURL('data:image/jpeg');
+											
+												imgData = canvas.toDataURL('image/jpeg').slice('data:image/jpeg;base64,'.length);
 												// Convert the data to binary form
-												//imgData = atob(imgData)
-
+												imgData = atob(imgData);
+												
+												// -------------------------------------------------
+												// second loop for second page
+												context.drawImage(images.base_image,0,0, 1260, 1782); // draw base underlaying image, in this case white streched to each corner.
+												
+												context.drawImage(images.customkey2, 175, paddingTop, images.customkey2.width * ratioSize, (images.customkey2.width*ratioSize)/aspectRatio);
+												context.drawImage(images.customkey3, 175, 950, 950, 950/aspectRatio);
+												
+												markers[2] = canvas.toDataURL('image/jpeg').slice('data:image/jpeg;base64,'.length);
+												// Convert the data to binary form
+												markers[2] = atob(markers[2]);
+												
+												//--------------------------------------------------
+												
 												//and lose the canvas when you're done
 												document.body.removeChild(canvas);
+										
+											
+											var doc = new jsPDF();
+												
+												doc.addImage(imgData, 'JPEG', 0, 0, 210, 297); // adds the image up top
+												
+												doc.text(70, 15, headerMemo);
+											
+											    doc.addPage();
+											
+												doc.addImage(markers[2], 'JPEG', 0, 0, 210, 297); // adds the image up top
+											
+												doc.text(70, 15, headerMemo);
+																						
+											doc.save(damageId+'.pdf');
 
 											});
-
-											var doc = new jsPDF();
-											doc.addImage(imgData, 'JPEG', 0, 0,209, 297);
-											doc.save('test2.pdf');
+											
+											
 										}
 										
 										savePDF();
+										
+										
+										
 										
 									});
 								
