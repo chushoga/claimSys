@@ -1010,11 +1010,10 @@ include_once '/master/config.php'; ?>
 										var modelNo = "<?php echo $records_modelNo;?>";
 										var headerMemo = damageId + " [ " + modelNo + " ]";
 										
-										var imgData;
-										var imgData2;
 										var canvas;
 										
-										var markers = [];
+										var markers = []; // image data
+										var markersCounter = 0;
 										
 										var sources = {};
 										
@@ -1032,6 +1031,7 @@ include_once '/master/config.php'; ?>
 											var value = "<?php echo $value;?>";
 											
 										markers[k] = "";
+										markersCounter++;
 										
 											sources['customkey'+k] = value;
 											console.log(k + " | " + value );
@@ -1039,8 +1039,8 @@ include_once '/master/config.php'; ?>
 										<?php
 											}
 										?>
-										console.warn(markers[2]);
-										console.log(sources);
+										//console.warn(markers[2]);
+										//console.log(sources);
 										
 										/*
 										var sources = {
@@ -1085,9 +1085,11 @@ include_once '/master/config.php'; ?>
 											}
 											
 											
-											imgData = "";
-											imgData2 = "";
-											markers[2] = "";
+											// set the default value for the image data named here makers[]
+											for (k = 0; k < markersCounter; k++){
+												markers[k] = "";
+											}
+										
 																					
 											//load all the images first, then combine them in the callback
 											loadImages(sources, function(images) {
@@ -1106,13 +1108,14 @@ include_once '/master/config.php'; ?>
 												base_image.src = 'img/base.jpg';
 												context = canvas.getContext('2d');
 												
-												var ratioSize = ratio(images.customkey1.width, maxWidth);
-												var aspectRatio = images.customkey1.width / images.customkey1.height;
+												var ratioSize = ratio(images.customkey0.width, maxWidth);
+												var aspectRatio = images.customkey0.width / images.customkey0.height;
 												var paddingTop = 150; // set padding top
 												
 												// set padding bottom
 												// set padding left/right
-													
+												
+												var totalImageCount = 0;
 												var numCounter = 0; // total number of records
 												var newPageCounter = 0; // if counter hits 2 add new page and then reset.
 												var totalPages = 0; // all pages printed
@@ -1122,7 +1125,22 @@ include_once '/master/config.php'; ?>
 												// ------ START OF LOOP ----------------------------------------------
 												// -------------------------------------------------------------------
 												
-												console.error("---------------------- header -------------------");
+												// get and set the total amount of images
+												for(var src in sources) {
+													if(src != 'base_image'){ 
+														totalImageCount++;
+													}
+												}
+												console.info("total image count: " + totalImageCount)
+												//---------------------------------------------------------------------------
+												
+												// SET UP IMAGES
+												
+												
+												// PRINT IMAGES IN ORDER
+												
+												
+												//console.error("---------------------- header -------------------");
 												//context.drawImage(images.base_image,0,0, 1260, 1782); // draw base underlaying image, in this case white streched to each corner.
 												for(var src in sources) {
 													
@@ -1133,32 +1151,78 @@ include_once '/master/config.php'; ?>
 														}
 																												
 														if (newPage == true){
-															console.info("*** pageBreak ***");  // add a new page
-															console.error("---------------------- header -------------------");
-															//context.drawImage(images.base_image,0,0, 1260, 1782); // draw base underlaying image, in this case white streched to each corner.
+															//console.info("*** pageBreak ***");  // add a new page
+															//console.error("---------------------- header -------------------");
+															context.drawImage(images.base_image,0,0, 1260, 1782); // draw base underlaying image, in this case white streched to each corner.
 															newPageCounter = 0;
 															newPage = false;
+															//console.warn("3convert drawn images and add to markers["+totalPages+"]");
 															totalPages++;
 														}
 														
 														if (newPageCounter == 0) {
 															console.info("src: " + src + " | " + sources['customkey'+numCounter] + " | Current Count = " + newPageCounter); // add the images
-															//context.drawImage(images.src, 175, paddingTop, images.src.width * ratioSize, (images.src.width*ratioSize)/aspectRatio);
+															context.drawImage(images.base_image,0,0, 1260, 1782); // draw base underlaying image, in this case white streched to each corner.
+															context.drawImage(images[src], 175, paddingTop, images[src].width * ratioSize, (images[src].width*ratioSize)/aspectRatio);
+															console.error("---------------------- header -------------------");
+															console.log(sources['customkey'+numCounter] + " | " + numCounter + " of " + totalImageCount);
+															//console.info("print image " + numCounter);
+															// check if this is last image on the page
+															
+															if (numCounter == totalImageCount - 1){
+																
+																console.warn("1 convert drawn images and add to markers["+totalPages+"]");
+																markers[totalPages] = canvas.toDataURL('image/jpeg').slice('data:image/jpeg;base64,'.length);
+																// Convert the data to binary form
+																markers[totalPages] = atob(markers[totalPages]);
+																
+															}
 														}
 														if (newPageCounter == 1) {
-															console.info("nextImage");
-															console.info("src: " + src + " | " + sources['customkey'+numCounter] + " | Current Count = " + newPageCounter); // add the images
-															//context.drawImage(images.src, 175, 950, 950, 950/aspectRatio);
+															//console.info("nextImage");
+															//console.info("src: " + src + " | " + sources['customkey'+numCounter] + " | Current Count = " + newPageCounter); // add the images
+															context.drawImage(images[src], 175, 950, 950, 950/aspectRatio);
+															console.log(sources['customkey'+numCounter]);
+															//console.info("print image " + numCounter);
+															
+															console.warn("2 convert drawn images and add to markers["+totalPages+"]");
+															markers[totalPages] = canvas.toDataURL('image/jpeg').slice('data:image/jpeg;base64,'.length);
+															// Convert the data to binary form
+															markers[totalPages] = atob(markers[totalPages]);
 														}
-														
-														markers[newPageCounter] = canvas.toDataURL('image/jpeg').slice('data:image/jpeg;base64,'.length);
+														/*
+														markers[numCounter] = canvas.toDataURL('image/jpeg').slice('data:image/jpeg;base64,'.length);
 														// Convert the data to binary form
-														markers[newPageCounter] = atob(markers[newPageCounter]);
-														
+														markers[numCounter] = atob(markers[numCounter]);
+														*/
 														numCounter++;
 														newPageCounter++;
 													}
 												}
+												
+												//and lose the canvas when you're done
+												document.body.removeChild(canvas);
+												
+												//  ADD CREATED CANVAS plus add headers and page breaks.
+												var doc = new jsPDF(); // create new jsPDF document variable
+												
+												for(var i = 0; i < totalPages+1; i++){
+													//console.info(i + " of " + totalPages);
+													
+													// check if last in total pages
+													if (i == totalPages){
+													doc.addImage(markers[i], 'JPEG', 0, 0, 210, 297); // console.log("markers[" + i + "] add page: " + i);
+													doc.text(70, 15, headerMemo); //console.error("---- HEADER ----");
+														} else {
+													doc.addImage(markers[i], 'JPEG', 0, 0, 210, 297); //console.log("markers[" + i + "] add page: " + i);
+													doc.text(70, 15, headerMemo);  //console.error("---- HEADER ----");
+															 
+												    doc.addPage(); console.log("PAGE BREAK ----->");
+													}
+													
+												}
+												
+												doc.save(damageId+'.pdf');  console.error("MAKE DOCUMENT!");
 												
 												// -------------------------------------------------------------------
 												// ------ END LOOP HERE ----------------------------------------------
@@ -1167,7 +1231,7 @@ include_once '/master/config.php'; ?>
 												console.warn("total images: " + numCounter + " | page count: " + totalPages);
 												
 												
-												
+												/*
 												context.drawImage(images.base_image,0,0, 1260, 1782); // draw base underlaying image, in this case white streched to each corner.
 												
 												context.drawImage(images.customkey0, 175, paddingTop, images.customkey0.width * ratioSize, (images.customkey0.width*ratioSize)/aspectRatio);
@@ -1210,7 +1274,7 @@ include_once '/master/config.php'; ?>
 												doc.text(70, 15, headerMemo);
 																						
 											doc.save(damageId+'.pdf');
-
+*/
 											});
 											
 											
