@@ -21,6 +21,7 @@ include_once '/master/config.php'; ?>
 							var dialogListRecords;
 							var dialogUsers;
 							var dialogEditFiles;
+							var dialogExportExcel;
 
 							dialogNewClaim = $("#dialogNewClaim").dialog({
 								autoOpen: false,
@@ -39,6 +40,13 @@ include_once '/master/config.php'; ?>
 								autoOpen: false,
 								modal: true
 							});
+							
+							dialogExportExcel = $("#dialogExportExcel").dialog({
+								autoOpen: false,
+								modal: true,
+								width: 900
+							});
+							
 
 							$("#addNewClaimBtn").click(function() {
 								dialogNewClaim.dialog("open");
@@ -49,6 +57,10 @@ include_once '/master/config.php'; ?>
 							$("#dialogUsersBtn").click(function() {
 								dialogUsers.dialog("open");
 							}); // select users
+							
+							$("#dialogExportExcelBtn").click(function() {
+								dialogExportExcel.dialog("open");
+							}); // create new claim
 
 							// edit files dialogue box
 							$(".dialogEditFilesBtn").click(function() {
@@ -455,7 +467,7 @@ include_once '/master/config.php'; ?>
 										</a>
 
 										<!-- STATS -->
-										<a href='#' class='btnLarge' style='float: left;' data-tooltip='View Stats'>
+										<a href='#' id='dialogExportExcelBtn' class='btnLarge' style='float: left;' data-tooltip='View Stats'>
 											<span class="btn fa-stack fa-lg" style=''>
 									<i class="fa fa-square fa-stack-2x"></i>
 									<i class="fa fa-pie-chart fa-stack-1x fa-inverse btnLargeText"></i>
@@ -1007,6 +1019,9 @@ include_once '/master/config.php'; ?>
 										var cid = <?php echo $recMasterId;?>;
 
 										var damageId = "<?php echo $records_id_dmg;?>";
+										if (damageId == "" || damageId == " "){
+											damageId = "unknown";
+										}
 										var modelNo = "<?php echo $records_modelNo;?>";
 										var headerMemo = damageId + " [ " + modelNo + " ]";
 										
@@ -1034,7 +1049,7 @@ include_once '/master/config.php'; ?>
 										markersCounter++;
 										
 											sources['customkey'+k] = value;
-											console.log(k + " | " + value );
+											//console.log(k + " | " + value );
 											
 										<?php
 											}
@@ -1131,7 +1146,7 @@ include_once '/master/config.php'; ?>
 														totalImageCount++;
 													}
 												}
-												console.info("total image count: " + totalImageCount)
+												//console.info("total image count: " + totalImageCount)
 												//---------------------------------------------------------------------------
 												
 												// SET UP IMAGES
@@ -1161,17 +1176,17 @@ include_once '/master/config.php'; ?>
 														}
 														
 														if (newPageCounter == 0) {
-															console.info("src: " + src + " | " + sources['customkey'+numCounter] + " | Current Count = " + newPageCounter); // add the images
+															//console.info("src: " + src + " | " + sources['customkey'+numCounter] + " | Current Count = " + newPageCounter); // add the images
 															context.drawImage(images.base_image,0,0, 1260, 1782); // draw base underlaying image, in this case white streched to each corner.
 															context.drawImage(images[src], 175, paddingTop, images[src].width * ratioSize, (images[src].width*ratioSize)/aspectRatio);
-															console.error("---------------------- header -------------------");
-															console.log(sources['customkey'+numCounter] + " | " + numCounter + " of " + totalImageCount);
+															//console.error("---------------------- header -------------------");
+															//console.log(sources['customkey'+numCounter] + " | " + numCounter + " of " + totalImageCount);
 															//console.info("print image " + numCounter);
 															// check if this is last image on the page
 															
 															if (numCounter == totalImageCount - 1){
 																
-																console.warn("1 convert drawn images and add to markers["+totalPages+"]");
+																//console.warn("1 convert drawn images and add to markers["+totalPages+"]");
 																markers[totalPages] = canvas.toDataURL('image/jpeg').slice('data:image/jpeg;base64,'.length);
 																// Convert the data to binary form
 																markers[totalPages] = atob(markers[totalPages]);
@@ -1182,10 +1197,10 @@ include_once '/master/config.php'; ?>
 															//console.info("nextImage");
 															//console.info("src: " + src + " | " + sources['customkey'+numCounter] + " | Current Count = " + newPageCounter); // add the images
 															context.drawImage(images[src], 175, 950, 950, 950/aspectRatio);
-															console.log(sources['customkey'+numCounter]);
+															//console.log(sources['customkey'+numCounter]);
 															//console.info("print image " + numCounter);
 															
-															console.warn("2 convert drawn images and add to markers["+totalPages+"]");
+															//console.warn("2 convert drawn images and add to markers["+totalPages+"]");
 															markers[totalPages] = canvas.toDataURL('image/jpeg').slice('data:image/jpeg;base64,'.length);
 															// Convert the data to binary form
 															markers[totalPages] = atob(markers[totalPages]);
@@ -1217,18 +1232,18 @@ include_once '/master/config.php'; ?>
 													doc.addImage(markers[i], 'JPEG', 0, 0, 210, 297); //console.log("markers[" + i + "] add page: " + i);
 													doc.text(70, 15, headerMemo);  //console.error("---- HEADER ----");
 															 
-												    doc.addPage(); console.log("PAGE BREAK ----->");
+												    doc.addPage(); //console.log("PAGE BREAK ----->");
 													}
 													
 												}
 												
-												doc.save(damageId+'.pdf');  console.error("MAKE DOCUMENT!");
+												doc.save(damageId+'.pdf');  //console.error("MAKE DOCUMENT!");
 												
 												// -------------------------------------------------------------------
 												// ------ END LOOP HERE ----------------------------------------------
 												// -------------------------------------------------------------------
 												
-												console.warn("total images: " + numCounter + " | page count: " + totalPages);
+												//console.warn("total images: " + numCounter + " | page count: " + totalPages);
 												
 												
 												/*
@@ -1459,6 +1474,38 @@ include_once '/master/config.php'; ?>
 					
 					echo "test";
 	
+					
+					echo "</div>";
+					?>
+				</div>
+			
+			<!-- EXCEL FORMAT -->
+				<div id="dialogExportExcel" class='customScrollbar' title="EXCEL export" style='font-family: monospace; font-size: 13px;'>
+					<?php
+					echo "<div class='dialogExportExcel' style=''>";
+					
+					echo "<table style='width: 100%; border: 1px solid black; margin: calc(100% - 10px;)'>";
+					echo "<th>title1</th>";
+					echo "<th>title1</th>";
+					echo "<th>title1</th>";
+					echo "<th>title1</th>";
+					echo "<th>title1</th>";
+					echo "<th>title1</th>";
+					
+					echo "<tr>";
+					echo "<td>data1</td>";
+					echo "</tr>";
+					echo "<tr>";
+					echo "<th>title1</th><td>data1</td>";
+					echo "</tr>";
+					echo "<tr>";
+					echo "<th>title1</th><td>data1</td>";
+					echo "</tr>";
+					
+					echo "</table>";
+					echo "<br><button>EXPORT TABLE</button>";
+					
+					
 					
 					echo "</div>";
 					?>
