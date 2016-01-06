@@ -21,7 +21,8 @@ include_once '/master/config.php'; ?>
 							var dialogListRecords;
 							var dialogUsers;
 							var dialogEditFiles;
-							var dialogExportExcel;
+							var dialogTableView;
+							var dialogDownloadOptions;
 
 							dialogNewClaim = $("#dialogNewClaim").dialog({
 								autoOpen: false,
@@ -40,27 +41,38 @@ include_once '/master/config.php'; ?>
 								autoOpen: false,
 								modal: true
 							});
-							
-							dialogExportExcel = $("#dialogExportExcel").dialog({
+							dialogTableView = $("#dialogTableView").dialog({
 								autoOpen: false,
 								modal: true,
-								width: 900
+								width: 1000
+							});
+							dialogDownloadOptions = $("#dialogDownloadOptions").dialog({
+								autoOpen: false,
+								modal: true,
+								height: 340
 							});
 							
-
+							
+							
+							// create new claim
 							$("#addNewClaimBtn").click(function() {
 								dialogNewClaim.dialog("open");
-							}); // create new claim
+							});
+							
+							// list records
 							$("#listRecordsBtn").click(function() {
 								dialogListRecords.dialog("open");
-							}); // list records
+							});
+							
+							// select users
 							$("#dialogUsersBtn").click(function() {
 								dialogUsers.dialog("open");
-							}); // select users
+							});
 							
-							$("#dialogExportExcelBtn").click(function() {
-								dialogExportExcel.dialog("open");
-							}); // create new claim
+							// open table view
+							$("#dialogTableViewBtn").click(function() {
+								dialogTableView.dialog("open");
+							});
 
 							// edit files dialogue box
 							$(".dialogEditFilesBtn").click(function() {
@@ -82,20 +94,24 @@ include_once '/master/config.php'; ?>
 								});
 
 							});
-						});
+							
+							// save images to pdf
+							$('#downloadBtn').click(function() {
+									dialogDownloadOptions.dialog("open");
+								/*
+									var doc = new jsPDF();
+									doc.text(20, 20, 'Hello world!');
+									doc.text(20, 30, 'This is client-side Javascript, pumping out a PDF.');
+									doc.addPage();
+									doc.text(20, 20, 'Do you like that?');
 
-						// save images to pdf
-						$('#downloadBtn').click(function() {
-								
-								var doc = new jsPDF();
-								doc.text(20, 20, 'Hello world!');
-								doc.text(20, 30, 'This is client-side Javascript, pumping out a PDF.');
-								doc.addPage();
-								doc.text(20, 20, 'Do you like that?');
-
-								doc.save('Test.pdf');
+									doc.save('Test.pdf');
+								*/
+							});
 							
 						});
+
+						
 
 						//change input to uppercase
 						$('#makerName').keyup(function() {
@@ -328,7 +344,7 @@ include_once '/master/config.php'; ?>
 
 							$(location).attr('href', 'index.php');
 						});
-
+						
 						// calculate total value
 						var calculateTotalValue = function() {
 							var totalSum = 0;
@@ -340,6 +356,7 @@ include_once '/master/config.php'; ?>
 							$('#totalPrice').text(totalSum);
 
 						}
+						
 
 						$('.price').bind("change keyup keydown paste", function() {
 							calculateTotalValue();
@@ -467,7 +484,7 @@ include_once '/master/config.php'; ?>
 										</a>
 
 										<!-- STATS -->
-										<a href='#' id='dialogExportExcelBtn' class='btnLarge' style='float: left;' data-tooltip='View Stats'>
+										<a href='#' id='' class='btnLarge' style='float: left;' data-tooltip='View Stats'>
 											<span class="btn fa-stack fa-lg" style=''>
 									<i class="fa fa-square fa-stack-2x"></i>
 									<i class="fa fa-pie-chart fa-stack-1x fa-inverse btnLargeText"></i>
@@ -475,27 +492,27 @@ include_once '/master/config.php'; ?>
 										</a>
 
 										<!-- DOWNLOAD -->
-										<a href='#' id='downloadBtn' class='btnLarge' style='float: left;' data-tooltip='Download PDF, EXEL, PRINT'>
+										<a href='#' id='downloadBtn' class='btnLarge' style='float: left;' data-tooltip='Download PDF, EXEL, ZIP all'>
 											<span class="btn fa-stack fa-lg" style=''>
 									<i class="fa fa-square fa-stack-2x"></i>
 									<i class="fa fa-cloud-download fa-stack-1x fa-inverse btnLargeText"></i>
 								</span>
 										</a>
 
-										<!-- SETTINGS -->
-										<a href='#' class='btnLarge' style='float: left;' data-tooltip='Settings'>
+										<!-- TABLE VIEW -->
+										<a href='#' id='dialogTableViewBtn' class='btnLarge' style='float: left;' data-tooltip='Settings'>
 											<span class="btn fa-stack fa-lg" style=''>
 									<i class="fa fa-square fa-stack-2x"></i>
-									<i class="fa fa-wrench fa-stack-1x fa-inverse btnLargeText"></i>
+									<i class="fa fa-table fa-stack-1x fa-inverse btnLargeText"></i>
 								</span>
 										</a>
 
 										<!-- USERS -->
 										<a href='#' id='dialogUsersBtn' class='btnLarge' style='float: left;' data-tooltip='Select Users'>
 											<span class="btn fa-stack fa-lg" style=''>
-									<i class="fa fa-square fa-stack-2x"></i>
-									<i class="fa fa-users fa-stack-1x fa-inverse btnLargeText"></i>
-								</span>
+												<i class="fa fa-square fa-stack-2x"></i>
+												<i class="fa fa-users fa-stack-1x fa-inverse btnLargeText"></i>
+											</span>
 										</a>
 										</span>
 
@@ -735,7 +752,7 @@ include_once '/master/config.php'; ?>
 														</td>
 													</tr>
 													<tr>
-														<th>Damage Size:</th>
+														<th>Damage Size (mm):</th>
 														<td><input type='number' min='0' step='1' id='damageSize_$records_id' value='$records_damageSize' name='damageSize_$records_id'></td>
 													</tr>
 													<tr>
@@ -900,6 +917,7 @@ include_once '/master/config.php'; ?>
 										}
 									};
 									
+									/*
 									
 									$('#downloadPdfBtn111<?php echo $records_id; ?>').click(function() {
 										
@@ -984,9 +1002,11 @@ include_once '/master/config.php'; ?>
 										getImageFromUrl('recordFiles/20/507/IMG_1623.jpg', createPDF);
 										getImageFromUrl('recordFiles/20/507/IMG_1624.jpg', createPDF);
 									});
+									*/
 
 									// -------------------------------------------------------------------------------
 									
+									/*
 									// save images to pdf
 										$('#downloadPdfBtn1111<?php echo $records_id; ?>').click(function() {
 											
@@ -1009,6 +1029,7 @@ include_once '/master/config.php'; ?>
 												doc.save(recordBlockId+'.pdf');
 	
 										});
+										*/
 								// *************************************************************************************************************
 									
 									
@@ -1376,7 +1397,7 @@ include_once '/master/config.php'; ?>
 				</div>
 
 				<!-- LIST RECORDS -->
-				<div id="dialogListRecords" class='customScrollbar' title="All Records List" style='font-family: monospace; font-size: 13px;'>
+				<div id="dialogListRecords" class='customScrollbar' title="All Records List" style=''>
 					<?php
 						$conditionColor = "";
 						$conditionIcon = "";
@@ -1471,45 +1492,267 @@ include_once '/master/config.php'; ?>
 				<div id="dialogEditFiles" class='customScrollbar' title="Edit Files" style='font-family: monospace; font-size: 13px;'>
 					<?php
 					echo "<div class='editFilesBlock' style='overflow: hidden;'>";
-					
-					echo "test";
-	
-					
 					echo "</div>";
 					?>
 				</div>
 			
-			<!-- EXCEL FORMAT -->
-				<div id="dialogExportExcel" class='customScrollbar' title="EXCEL export" style='font-family: monospace; font-size: 13px;'>
+				<!-- DOWNLOAD OPTIONS -->
+				<div id="dialogDownloadOptions" class='customScrollbar' title="Table View With Download Options" style='font-family: monospace; font-size: 13px;'>
 					<?php
-					echo "<div class='dialogExportExcel' style=''>";
+					echo "<div class='downloadOptionsBlock' style='overflow: hidden;'>";
 					
-					echo "<table style='width: 100%; border: 1px solid black; margin: calc(100% - 10px;)'>";
-					echo "<th>title1</th>";
-					echo "<th>title1</th>";
-					echo "<th>title1</th>";
-					echo "<th>title1</th>";
-					echo "<th>title1</th>";
-					echo "<th>title1</th>";
-					
-					echo "<tr>";
-					echo "<td>data1</td>";
-					echo "</tr>";
-					echo "<tr>";
-					echo "<th>title1</th><td>data1</td>";
-					echo "</tr>";
-					echo "<tr>";
-					echo "<th>title1</th><td>data1</td>";
-					echo "</tr>";
-					
-					echo "</table>";
-					echo "<br><button>EXPORT TABLE</button>";
-					
-					
-					
+						echo "<div class='optionsBoxWrapper'>";
+							echo "
+								<a href='#' id='dialogPdfDownloadBtn' class='btnXLarge' style='float: left;' data-tooltip='Download Options'>
+									<span class='btn fa-stack fa-lg' style=''>
+										<i class='fa fa-cloud fa-stack-2x'></i>
+										<i class='fa fa-file-pdf-o fa-stack-1x fa-inverse btnXLargeText'></i>
+									</span>
+								</a>";
+							echo "<h1>PDF DOWNLOAD</h1>";
+						echo "</div><br>";
+						echo "<div class='optionsBoxWrapper'>";
+							echo "
+								<a href='#' id='dialogExportBtn' class='btnXLarge' style='float: left;' data-tooltip='Download Options'>
+									<span class='btn fa-stack fa-lg' style=''>
+										<i class='fa fa-cloud fa-stack-2x'></i>
+										<i class='fa fa-file-excel-o fa-stack-1x fa-inverse btnXLargeText'></i>
+									</span>
+								</a>";
+							echo "<h1>EXCEL DOWNLOAD</h1>";
+						echo "</div><br>";
+						echo "<div class='optionsBoxWrapper'>";
+							echo "
+								<a href='#' id='dialogZipDownloadBtn' class='btnXLarge' style='float: left;' data-tooltip='Download Options'>
+									<span class='btn fa-stack fa-lg' style=''>
+										<i class='fa fa-cloud fa-stack-2x'></i>
+										<i class='fa fa-file-archive-o fa-stack-1x fa-inverse btnXLargeText'></i>
+									</span>
+								</a>
+							";
+							echo "<h1>ZIP DOWNLOAD</h1>";
+						echo "</div>";
 					echo "</div>";
 					?>
 				</div>
+			
+			<!-- TABLE FORMAT -->
+				<div id="dialogTableView" class='customScrollbar' title="Table View With Download Options" style='font-family: monospace; font-size: 13px;'>
+					<?php
+					echo "<div class='dialogExportExcel' style=''>";
+					echo "<div id='saveWrapper'>";
+					echo "<table id='customers' style='width: 100%; border: 1px solid black; margin: calc(100% - 10px;); text-align: center;'>";
+					echo "<thead>";
+					echo "<tr><th colspan='10' style='text-align: left; border: 1px solid black;'>TAIYO KANAMONO JAPAN [ $recMasterMakerName ] $recMasterDate</th></tr>";
+					echo "<th style='border: 1px solid black;'>DAMAGE ID</th>";
+					echo "<th style='border: 1px solid black;'>MODEL</th>";
+					echo "<th style='border: 1px solid black;'>SPEC</th>";
+					echo "<th style='border: 1px solid black;'>GUARANTEE No.</th>";
+					echo "<th style='border: 1px solid black;'>INVOICE No.</th>";
+					echo "<th style='border: 1px solid black;'>DATE</th>";
+					echo "<th style='border: 1px solid black;'>INVOICE VALUE</th>";
+					echo "<th style='border: 1px solid black;'>ORDER No.</th>";
+					echo "<th style='border: 1px solid black;'>REFERENCE</th>";
+					echo "<th style='border: 1px solid black;'>DAMAGE SIZE</th>";
+					echo "</thead>";
+					echo "<tbody>";
+					
+					/* QUERY THE TABLE AND GET THE LOOP INFO */
+					
+					$totalCost = 0; // add the total cost in the loop
+					
+					$resultMain = mysql_query("SELECT * FROM `records` WHERE `id_recordMaster` = '$recMasterId'");
+							while($rowMain = mysql_fetch_assoc($resultMain)){
+								//set variables for the blocks here.
+								$records_id = $rowMain['id'];
+								$records_id_recordMaster = $rowMain['id_recordMaster'];
+								$records_id_dmg = $rowMain['id_dmg'];
+								$records_modelNo = $rowMain['modelNo'];
+								$records_tformNo = $rowMain['tformNo'];
+								$records_orderNo = $rowMain['orderNo'];
+								$records_spec = $rowMain['spec'];
+								$records_invoiceNo = $rowMain['invoiceNo'];
+								$records_invoiceDate = $rowMain['invoiceDate'];
+								$records_invoiceGntNo = $rowMain['invoiceGntNo'];
+								$records_invoiceCurrency = $rowMain['currency'];
+								$records_invoiceValue = $rowMain['invoiceValue'];
+								$records_damageType = $rowMain['damageType'];
+								$records_damageSize = $rowMain['damageSize'];
+								$records_damageMemo_EN = $rowMain['damageMemoEn'];
+								
+								$totalCost += $records_invoiceValue; // set total cost
+								
+								$damSize = "";
+								// check if size is zero
+								if ($rowMain['damageSize'] == "0"){
+									$damSize = "";
+								} else {
+									$damSize = $rowMain['damageSize']."mm";
+								}
+								
+								switch($records_invoiceCurrency){
+								case "0":
+									$curr = "€";
+									break;
+								case "1": 
+									$curr = "$";
+									break;
+								case "2": 
+									$curr = "円";
+									break;
+								default:
+									$curr = "";
+							}
+					
+						echo "<tr>";
+						echo "<td style='border: 1px solid black;'>".$rowMain['id_dmg']."</td>";
+						echo "<td style='text-align: center; border: 1px solid black;'>".$rowMain['modelNo']."</td>";
+						echo "<td style='text-align: center; border: 1px solid black;'>".$rowMain['spec']."</td>";
+						echo "<td style='text-align: center; border: 1px solid black;'>".$rowMain['invoiceGntNo']."</td>";
+						echo "<td style='text-align: center; border: 1px solid black;'>".$rowMain['invoiceNo']."</td>";
+						echo "<td style='text-align: center; border: 1px solid black;'>".$rowMain['invoiceDate']."</td>";
+						echo "<td style='border: 1px solid black; text-align: right;'>".$curr." ".number_format($rowMain['invoiceValue'], 2, '.',',')."</td>";
+						echo "<td style='text-align: center; border: 1px solid black;'>".$rowMain['orderNo']."</td>";
+						echo "<td style='text-align: center; border: 1px solid black;'>".$rowMain['damageMemoEn']."</td>";
+						echo "<td style='text-align: center; border: 1px solid black;'>".$damSize."</td>";
+						echo "</tr>";
+					}
+					echo "<tr><th colspan='6' style='text-align: right;'>TOTAL</th>
+					          <th style='text-align: right; border: 1px solid black;'>".$curr." ".number_format($totalCost, 2, '.',',')."</th>
+							  <th colspan='3'></th>
+							  </tr>";
+					echo "</tbody>";
+					echo "</table>";
+					echo "</div>"; // save wrapper finished
+					?>
+					<br>
+						<button id='downloadTablePdfBtn'>PDF DOWNLOAD <i style='color: crimson;' class="fa fa-file-pdf-o"></i></button>
+						<a download="<?php echo $currentMakerName;?>.xls" href="#" onclick="return ExcellentExport.excel(this, 'saveWrapper', '<?php echo $currentClaimDate;?>');"><button>EXCEL DOWNLOAD <i style='color: green;' class="fa fa-file-excel-o"></i></button></a>
+			
+					<!-- DOWNLOAD PDF SCRIPT -->
+					<script type="text/javascript">
+						$(document).ready(function(){
+							$('#downloadTablePdfBtn').click(function() {
+						
+								var th_damageId = { text: 'DAMAGE ID', style: 'th', alignment: 'center'};
+								var th_model = { text: 'MODEL', style: 'th', alignment: 'center'};
+								var th_spec = { text: 'SPEC', style: 'th', alignment: 'center'};
+								var th_guar = { text: 'GUARANTEE No.', style: 'th', alignment: 'center'};
+								var th_invoiceNo = { text: 'INVOICE No.', style: 'th', alignment: 'center'};
+								var th_invoiceDate = { text: 'DATE', style: 'th', alignment: 'center'};
+								var th_invoiceValue = { text: 'INVOICE VALUE', style: 'th', alignment: 'center'};
+								var th_orderNo = { text: 'ORDER No.', style: 'th', alignment: 'center'};
+								var th_ref = { text: 'REFERENCE', style: 'th', alignment: 'center'};
+								var th_damageSize = { text: 'DAMAGE SIZE', style: 'th', alignment: 'center'};
+								
+								var td_damageId = { text: 'FLN72-151202-38', style: 'td', alignment: 'center'};
+								var td_model = { text: '361-1 SPE', style: 'td', alignment: 'center'};
+								var td_spec = { text: 'special inlet hole', style: 'td', alignment: 'center'};
+								var td_guar = { text: '302001400042000', style: 'td', alignment: 'center'};
+								var td_invoiceNo = { text: 'JP71814.', style: 'td', alignment: 'center'};
+								var td_invoiceDate = { text: '04.09.2015', style: 'td', alignment: 'center'};
+								var td_invoiceValue = { text: '€ 292.41', style: 'td', alignment: 'center'};
+								var td_orderNo = { text: '2456', style: 'td', alignment: 'center'};
+								var td_ref = { text: 'Defective Finish on overflow hole rim', style: 'td', alignment: 'center'};
+								var td_damageSize = { text: '40mm~', style: 'td', alignment: 'center'};
+								
+								var headerTitle = { text: 'TAIYO KANAMONO JAPAN [ <?php echo $recMasterMakerName; ?> ] <?php echo $recMasterDate; ?>', colSpan: 10, style: 'th', alignment: 'left'};
+								
+								var docDefinition = {
+									//page size
+									pageSize: 'A4',
+
+									// default we use portrait, you can change it to landscape
+									pageOrientation: 'landscape',
+									
+									content: [
+									{
+									  table: {
+										// headers are automatically repeated if the table spans over multiple pages
+										// you can declare how many rows should be treated as headers
+										
+										widths: [ 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto' ],
+										headerRows: 2,
+	
+										body: [
+											[ headerTitle, {}, {}, {}, {}, {}, {}, {}, {}, {} ],
+											[ th_damageId, th_model, th_spec, th_guar, th_invoiceNo, th_invoiceDate, th_invoiceValue, th_orderNo, th_ref, th_damageSize ],
+											[ td_damageId, td_model, td_spec, td_guar, td_invoiceNo, td_invoiceDate, td_invoiceValue, td_orderNo, td_ref, td_damageSize  ]
+										] // end of table body
+									} // end of table
+									}
+									], // end of content
+									styles: {
+										th: {
+											fontSize: 9,
+											bold: true
+										},
+										td: {
+											fontSize: 9,
+											bold: false
+										}
+									}
+								}; // end of definition
+								
+								
+								 // download the PDF (temporarily Chrome-only)
+ 								pdfMake.createPdf(docDefinition).download('optionalName.pdf');
+								
+							}); // end of click function
+							
+							
+						});
+						//EXAMPLE FOR PROGRAMICALLY GETTING DATA
+						
+						/*
+						var externalDataRetrievedFromServer = [
+							{ name: 'Bartek', age: 34 },
+							{ name: 'John', age: 27 },
+							{ name: 'Elizabeth', age: 30 },
+						];
+
+						function buildTableBody(data, columns) {
+							var body = [];
+
+							body.push(columns);
+
+							data.forEach(function(row) {
+								var dataRow = [];
+
+								columns.forEach(function(column) {
+									dataRow.push(row[column].toString());
+								})
+
+								body.push(dataRow);
+							});
+
+							return body;
+						}
+
+						function table(data, columns) {
+							return {
+								table: {
+									headerRows: 1,
+									body: buildTableBody(data, columns)
+								}
+							};
+						}
+
+						var dd = {
+							content: [
+								{ text: 'Dynamic parts', style: 'header' },
+								table(externalDataRetrievedFromServer, ['name', 'age'])
+							]
+						}
+						
+						*/
+					</script>
+					
+			</div> <!-- TABLE FORMAT FINISHED -->
+			
+			
+					
+				</div> <!-- WRAPPER FINISHED -->
 
 				<!-- DIALOGE BOXES END HERE -->
 

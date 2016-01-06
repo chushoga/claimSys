@@ -87,24 +87,7 @@ a {
 
 /* BUTTONS */
 
-.btnLarge {
-	width: 50px;
-	height: 50px;
-	display: block;
-	color: #CFCFCF;
-}
 
-.btnLargeText {
-	color: #303030;
-}
-
-.btnLarge i:hover {
-	color: #FFF;
-}
-
-.btnLarge:hover {
- color: #089BCC;
-}
 
 .btnSmall {
 	width: 26px;
@@ -125,6 +108,29 @@ a {
  color: #089BCC;
 }
 
+.btnLarge {
+	width: 50px;
+	height: 50px;
+	display: block;
+	color: #CFCFCF;
+}
+
+.btnLargeText {
+	color: #303030;
+}
+
+.btnLarge i:hover {
+	color: #FFF;
+}
+
+.btnLarge:hover {
+ color: #089BCC;
+}
+
+/* ---------- */
+
+
+/* ------ */
 
 .btnCol01 {
 	background-color: #FFF;
@@ -144,6 +150,7 @@ a {
 	border-radius: 5px;
 	padding: 2%;
 	color: #FFF;
+	font-size: 11px;
 }
 /* -------------------------------------------
 RECORD INPUT
@@ -357,3 +364,64 @@ DIALOG BOXES
 .removeRecord {
 	color: crimson;
 }
+/*---------------------------------*/
+/* Excel EXPORT */
+
+.dialogExportExcel table {
+	border-collapse: collapse;
+	font-family: monospace; 
+}
+
+.dialogExportExcel td {
+	text-align: center;
+	border: 1px solid #000;
+}
+
+.dialogExportExcel th {
+	border: 1px solid #000;
+}
+
+#dialogTableView button {
+	float: right;
+	margin-left: 5px;
+}
+
+#dialogTableView button:hover {
+	cursor: pointer;
+}
+
+/*---------------------------------*/
+/* DOWNLOAD Options */
+.optionsBoxWrapper {
+	background-color: #FFF;
+	height: 80px;
+	border-bottom: 3px solid skyblue;
+}
+
+.optionsBoxWrapper h1{
+	line-height: 80px;
+	font-size: 23px;
+	text-align: right;
+}
+
+.optionsBoxWrapper:hover{
+}
+
+.optionsBoxWrapper .btnXLarge {
+	display: block;
+	color: #303030;
+	font-size: 30px;
+}
+
+.optionsBoxWrapper .btnXLarge:hover {
+ color: #089BCC;
+}
+
+.optionsBoxWrapper h1 .btnXLargeText {
+	color: #BBB;
+}
+
+.optionsBoxWrapper h1 .btnXLarge i:hover {
+	color: #FFF;
+}
+
