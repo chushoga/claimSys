@@ -1560,6 +1560,7 @@ include_once '/master/config.php'; ?>
 					/* QUERY THE TABLE AND GET THE LOOP INFO */
 					
 					$totalCost = 0; // add the total cost in the loop
+					$pdfExportArray = array();
 					
 					$resultMain = mysql_query("SELECT * FROM `records` WHERE `id_recordMaster` = '$recMasterId'");
 							while($rowMain = mysql_fetch_assoc($resultMain)){
@@ -1580,7 +1581,9 @@ include_once '/master/config.php'; ?>
 								$records_damageSize = $rowMain['damageSize'];
 								$records_damageMemo_EN = $rowMain['damageMemoEn'];
 								
+								$pdfExportArray[] = array('name' => $records_id_dmg, 'age' => $records_modelNo); // push data to array to use for pdf export
 								$totalCost += $records_invoiceValue; // set total cost
+								
 								
 								$damSize = "";
 								// check if size is zero
@@ -1624,8 +1627,11 @@ include_once '/master/config.php'; ?>
 					echo "</tbody>";
 					echo "</table>";
 					echo "</div>"; // save wrapper finished
+					//$pdfExportArray =  //test
+					//echo $pdfExportArray;
 					?>
 					<br>
+						<button id='testdownloadTablePdfBtn'>TEST PDF DOWNLOAD <i style='color: purple;' class="fa fa-file-pdf-o"></i></button>
 						<button id='downloadTablePdfBtn'>PDF DOWNLOAD <i style='color: crimson;' class="fa fa-file-pdf-o"></i></button>
 						<a download="<?php echo $currentMakerName;?>.xls" href="#" onclick="return ExcellentExport.excel(this, 'saveWrapper', '<?php echo $currentClaimDate;?>');"><button>EXCEL DOWNLOAD <i style='color: green;' class="fa fa-file-excel-o"></i></button></a>
 			
@@ -1658,6 +1664,17 @@ include_once '/master/config.php'; ?>
 								
 								var headerTitle = { text: 'TAIYO KANAMONO JAPAN [ <?php echo $recMasterMakerName; ?> ] <?php echo $recMasterDate; ?>', colSpan: 10, style: 'th', alignment: 'left'};
 								
+								var test23 =  [td_damageId, td_model, td_spec, td_guar, td_invoiceNo, td_invoiceDate, td_invoiceValue, td_orderNo, td_ref, td_damageSize] ;
+								
+								var test3 = function(){
+							
+									for (var property in test23) {
+												if (test23.hasOwnProperty(property)) {
+													alert(property);
+												}
+											}
+								}
+								test3();
 								var docDefinition = {
 									//page size
 									pageSize: 'A4',
@@ -1678,6 +1695,7 @@ include_once '/master/config.php'; ?>
 											[ headerTitle, {}, {}, {}, {}, {}, {}, {}, {}, {} ],
 											[ th_damageId, th_model, th_spec, th_guar, th_invoiceNo, th_invoiceDate, th_invoiceValue, th_orderNo, th_ref, th_damageSize ],
 											[ td_damageId, td_model, td_spec, td_guar, td_invoiceNo, td_invoiceDate, td_invoiceValue, td_orderNo, td_ref, td_damageSize  ]
+											
 										] // end of table body
 									} // end of table
 									}
@@ -1700,20 +1718,27 @@ include_once '/master/config.php'; ?>
 								
 							}); // end of click function
 							
-							
-						});
-						//EXAMPLE FOR PROGRAMICALLY GETTING DATA
+							$('#testdownloadTablePdfBtn').click(function() {
 						
-						/*
+						
+						//EXAMPLE FOR PROGRAMICALLY GETTING DATA
+						var headerTitle = { text: 'TAIYO KANAMONO JAPAN [ <?php echo $recMasterMakerName; ?> ] <?php echo $recMasterDate; ?>', colSpan: 10, style: 'th', alignment: 'left'};
+						//alert (headerTitle);
+								
 						var externalDataRetrievedFromServer = [
-							{ name: 'Bartek', age: 34 },
-							{ name: 'John', age: 27 },
-							{ name: 'Elizabeth', age: 30 },
+							{ name: 'Bartek', age: 34, style: 'header'  },
+							{ name: 'John', age: 27,  style: 'header' },
+							{ name: 'Elizabeth', age: 30,  style: 'header' }
 						];
-
+								
+						var testexternalDataRetrievedFromServer = <?php echo json_encode($pdfExportArray) ?>;
+						$.each(testexternalDataRetrievedFromServer, function(key, value) {
+							console.log('stuff : ' + key + ", " + value);
+						});
+						
 						function buildTableBody(data, columns) {
 							var body = [];
-
+							
 							body.push(columns);
 
 							data.forEach(function(row) {
@@ -1722,30 +1747,53 @@ include_once '/master/config.php'; ?>
 								columns.forEach(function(column) {
 									dataRow.push(row[column].toString());
 								})
-
+								
 								body.push(dataRow);
 							});
-
 							return body;
 						}
 
 						function table(data, columns) {
+							
 							return {
 								table: {
-									headerRows: 1,
+									headerRows: 2,
 									body: buildTableBody(data, columns)
 								}
 							};
+							
 						}
 
 						var dd = {
+							//page size
+							pageSize: 'A4',
+
+							// default we use portrait, you can change it to landscape
+							pageOrientation: 'landscape',
+							
 							content: [
-								{ text: 'Dynamic parts', style: 'header' },
-								table(externalDataRetrievedFromServer, ['name', 'age'])
-							]
+								
+								table(externalDataRetrievedFromServer, ['name', 'age', 'style'])
+							],
+							styles: {
+									header: {
+										fontSize: 5,
+										bold: true
+									},
+									subheader: {
+										fontSize: 5,
+										bold: false
+									}
+								}
 						}
 						
-						*/
+						// download the PDF (temporarily Chrome-only)
+ 						pdfMake.createPdf(dd).download('testname.pdf');
+						
+							}); // END OF test CLICK
+															
+								
+					}); // END OF DOC READY FUNCTION
 					</script>
 					
 			</div> <!-- TABLE FORMAT FINISHED -->
