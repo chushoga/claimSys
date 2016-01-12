@@ -138,3 +138,27 @@ D-FLN72-152321-A01,,,,,,2015-12-05,,0,445.9,0,10,,,0,ハウ,20,addcomment,550
 D-FLN72-151207-8,366-1,ADF70-1112-A01,2253,special inlet hole,2265Jp21,2015-12-10,12332112,0,286.96,1,4,BLACK DOTS,黒点,2,ハウ,20,addcomment,507
 D-FLN72-151207-7,122-D,ADF80-1111-222,,,,2015-12-02,,0,578.34,0,22,,,0,ハウ,20,addcomment,548
 D-FLN72-152321-A01,,,,,,2015-12-05,,0,445.9,0,10,,,0,ハウ,20,addcomment,550
+D-FLN72-151207-7,122-D,ADF80-1111-222,,,,2015-12-02,,0,578.34,0,22,Defective Finish on overflow hole rim,,0,ハウ,20,addcomment,548
+D-FLN72-151207-8,366-1,ADF70-1112-A01,2253,special inlet hole,2265Jp21,2015-12-10,12332112,0,286.96,1,4,BLACK DOTS,黒点,2,ハウ,20,addcomment,507
+D-FLN72-152321-A01,,,,,,2015-12-05,,0,445.9,0,10,Defective Finish on overflow hole rim,,0,ハウ,20,addcomment,550
+D-FLN72-151207-8,366-1,ADF70-1112-A01,2253,special inlet hole,2265Jp21,2015-12-10,12332112,0,286.96,1,4,BLACK DOTS,黒点,2,ハウ,20,addcomment,507
+D-FLN72-152321-A01,122-D,,,special inlet hole,,2015-12-05,,0,445.9,0,10,Defective Finish on overflow hole rim,,0,ハウ,20,addcomment,550
+D-FLN72-151207-7,122-D,ADF80-1111-222,,,,2015-12-02,,0,578.34,0,22,Defective Finish on overflow hole rim,,0,ハウ,20,addcomment,548
+D-FLN72-151207-7,122-D,ADF80-1111-222,,,JP12233,2015-12-02,,0,578.34,0,22,Defective Finish on overflow hole rim,,0,ハウ,20,addcomment,548
+D-FLN72-151207-8,366-1,ADF70-1112-A01,2253,special inlet hole,2265Jp21,2015-12-10,12332112,0,286.96,1,4,BLACK DOTS,黒点,2,ハウ,20,addcomment,507
+D-FLN72-152321-A01,122-D,,,special inlet hole,JP12233,2015-12-05,302001400042000,0,445.9,0,10,Defective Finish on overflow hole rim,,0,ハウ,20,addcomment,550
+D-FLN72-151207-8,366-1,ADF70-1112-A01,2253,special inlet hole,2265Jp21,2015-12-10,12332112,1,286.96,1,4,BLACK DOTS,黒点,2,ハウ,20,addcomment,507
+D-FLN72-151207-7,122-D,ADF80-1111-222,,,JP12233,2015-12-02,,1,578.34,0,22,Defective Finish on overflow hole rim,,0,ハウ,20,addcomment,548
+D-FLN72-152321-A01,122-D,,,special inlet hole,JP12233,2015-12-05,302001400042000,1,445.9,0,10,Defective Finish on overflow hole rim,,0,ハウ,20,addcomment,550
+D-FLN72-151207-8,366-1,ADF70-1112-A01,2253,special inlet hole,2265Jp21,2015-12-10,12332112,1,286.96,1,4,BLACK DOTS,黒点,2,ハウ,20,addcomment,507
+D-FLN72-152321-A01,122-D,,,special inlet hole,JP12233,2015-12-05,302001400042000,1,445.9,0,10,Defective Finish on overflow hole rim,,0,ハウ,20,addcomment,550
+D-FLN72-151207-7,122-D,ADF80-1111-222,,,JP12233,2015-12-02,,1,578.34,0,22,Defective Finish on overflow hole rim,,0,ハウ,20,addcomment,548
+D-FLN72-151207-8,366-1,ADF70-1112-A01,2253,special inlet hole,2265Jp21,2015-12-10,12332112,2,286.96,1,4,BLACK DOTS,黒点,2,ハウ,20,addcomment,507
+D-FLN72-151207-7,122-D,ADF80-1111-222,,,JP12233,2015-12-02,,2,578.34,0,22,Defective Finish on overflow hole rim,,0,ハウ,20,addcomment,548
+D-FLN72-152321-A01,122-D,,,special inlet hole,JP12233,2015-12-05,302001400042000,2,445.9,0,10,Defective Finish on overflow hole rim,,0,ハウ,20,addcomment,550
+D-FLN72-151207-8,366-1,ADF70-1112-A01,2253,special inlet hole,2265Jp21,2015-12-10,12332112,0,286.96,1,4,BLACK DOTS,黒点,2,ハウ,20,addcomment,507
+D-FLN72-151207-7,122-D,ADF80-1111-222,,,JP12233,2015-12-02,,0,578.34,0,22,Defective Finish on overflow hole rim,,0,ハウ,20,addcomment,548
+D-FLN72-152321-A01,122-D,,,special inlet hole,JP12233,2015-12-05,302001400042000,0,445.9,0,10,Defective Finish on overflow hole rim,,0,ハウ,20,addcomment,550
+D-FLN72-151207-7,122-D,ADF80-1111-222,,,JP12233,2015-12-02,,0,578.34,0,22,Defective Finish on overflow hole rim,,0,ハウ,20,addcomment,548
+D-FLN72-151207-8,366-1,ADF70-1112-A01,2253,special inlet hole,2265Jp21,2015-12-10,12332112,0,286.12,1,4,BLACK DOTS,黒点,2,ハウ,20,addcomment,507
+D-FLN72-152321-A01,122-D,,,special inlet hole,JP12233,2015-12-05,302001400042000,0,445.9,0,10,Defective Finish on overflow hole rim,,0,ハウ,20,addcomment,550

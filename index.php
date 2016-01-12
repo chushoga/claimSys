@@ -44,7 +44,7 @@ include_once '/master/config.php'; ?>
 							dialogTableView = $("#dialogTableView").dialog({
 								autoOpen: false,
 								modal: true,
-								width: 1000
+								width: 1200
 							});
 							dialogDownloadOptions = $("#dialogDownloadOptions").dialog({
 								autoOpen: false,
@@ -534,7 +534,7 @@ include_once '/master/config.php'; ?>
 								$recMasterMakerName = $rowMaster['makerName'];
 								$recMasterDate = $rowMaster['date'];
 								$recMasterEditedBy = $rowMaster['editedBy'];
-								$modified = $rowMaster['date'];
+								$modified = $rowMaster['modified'];
 							}
 							
 							echo "<div id='recordHeaderTop' style=''><span style='margin-left: 5px;'>TAIYO KANAMONO JAPAN [ $recMasterMakerName ] $recMasterDate PENDING... <i class='fa fa-hourglass-half' style=''></i></span><span id='userNameShow' style='float: right; margin-right: 10px;'></span></div>";
@@ -1631,165 +1631,163 @@ include_once '/master/config.php'; ?>
 					//echo $pdfExportArray;
 					?>
 					<br>
-						<button id='testdownloadTablePdfBtn'>TEST PDF DOWNLOAD <i style='color: purple;' class="fa fa-file-pdf-o"></i></button>
 						<button id='downloadTablePdfBtn'>PDF DOWNLOAD <i style='color: crimson;' class="fa fa-file-pdf-o"></i></button>
-						<a download="<?php echo $currentMakerName;?>.xls" href="#" onclick="return ExcellentExport.excel(this, 'saveWrapper', '<?php echo $currentClaimDate;?>');"><button>EXCEL DOWNLOAD <i style='color: green;' class="fa fa-file-excel-o"></i></button></a>
+						<a download="<?php echo $currentMakerName." ".$currentClaimDate;?>.xls" href="#" onclick="return ExcellentExport.excel(this, 'saveWrapper', '<?php echo $currentClaimDate;?>');"><button>EXCEL DOWNLOAD <i style='color: green;' class="fa fa-file-excel-o"></i></button></a>
 			
 					<!-- DOWNLOAD PDF SCRIPT -->
+					
+					<?php 
+					
+					/* CURRENCY CONVERTER SUPPORT for EUR, USD, YEN*/
+						function toCurrencyAmount($currency, $amount){
+							switch($currency){
+								case "0":
+									$curr = "€";
+									$amount = number_format($amount, 2, '.', ',');
+									break;
+								case "1": 
+									$curr = "$";
+									$amount = number_format($amount, 2, '.', ',');
+									break;
+								case "2": 
+									$curr = "YEN ";
+									$amount = number_format($amount, 2, '.', ',');
+									break;
+								default:
+									$curr = "";
+									$amount = "";
+							}
+							return $curr.$amount;
+						}
+
+						$totalTableAmount = 0;// total amount
+
+						$data = array();
+
+						$headerStyle = "header";
+						$headerAlignment = "left";
+						$bodyStyle = "subheader";
+						$bodyAlignment = "center";
+						$headerTitle = array(
+							array("text" => "TAIYO KANAMONO JAPAN [$currentMakerName] $currentClaimDate", "style" => $headerStyle, "alignment" => $headerAlignment, "colSpan" => "10"),
+							array("text" => ""),
+							array("text" => ""),
+							array("text" => ""),
+							array("text" => ""),
+							array("text" => ""),
+							array("text" => ""),
+							array("text" => ""),
+							array("text" => ""),
+							array("text" => "")
+						);
+
+						$headerTh = array(
+							array("text" => "DAMAGE ID", "style" => $headerStyle, "alignment" => $bodyAlignment),
+							array("text" => "MODEL", "style" => $headerStyle, "alignment" => $bodyAlignment),
+							array("text" => "SPEC", "style" => $headerStyle, "alignment" => $bodyAlignment),
+							array("text" => "GUARANTEE No.", "style" => $headerStyle, "alignment" => $bodyAlignment),
+							array("text" => "INVOICE No.", "style" => $headerStyle, "alignment" => $bodyAlignment),
+							array("text" => "DATE", "style" => $headerStyle, "alignment" => $bodyAlignment),
+							array("text" => "INVOICE VALUE", "style" => $headerStyle, "alignment" => $bodyAlignment),
+							array("text" => "ORDER No.", "style" => $headerStyle, "alignment" => $bodyAlignment),
+							array("text" => "REFERENCE", "style" => $headerStyle, "alignment" => $bodyAlignment),
+							array("text" => "DAMAGE SIZE", "style" => $headerStyle, "alignment" => $bodyAlignment)
+							);
+
+						$data[] = $headerTitle;
+						$data[] = $headerTh;
+
+						$resultMain = mysql_query("SELECT * FROM `records` WHERE `id_recordMaster` = '$recMasterId'");
+						while($rowMain = mysql_fetch_assoc($resultMain)){
+
+							$damSize = "";
+
+							// check if size is zero
+							if ($rowMain['damageSize'] == "0"){
+								$damSize = "";
+							} else {
+								$damSize = $rowMain['damageSize']."mm";
+							}
+
+							$curr = toCurrencyAmount($rowMain['currency'], $rowMain['invoiceValue']);
+							$lastKnownCurrency = $rowMain['currency'];
+
+							$var = array(
+								array("text" => $rowMain['id_dmg'], "style" => $bodyStyle, "alignment" => $bodyAlignment),
+								array("text" => $rowMain['modelNo'], "style" => $bodyStyle, "alignment" => $bodyAlignment),
+								array("text" => $rowMain['spec'], "style" => $bodyStyle, "alignment" => $bodyAlignment),
+								array("text" => $rowMain['invoiceGntNo'], "style" => $bodyStyle, "alignment" => $bodyAlignment),
+								array("text" => $rowMain['invoiceNo'], "style" => $bodyStyle, "alignment" => $bodyAlignment),
+								array("text" => $rowMain['invoiceDate'], "style" => $bodyStyle, "alignment" => $bodyAlignment),
+								array("text" => $curr, "style" => $bodyStyle, "alignment" => $bodyAlignment),
+								array("text" => $rowMain['orderNo'], "style" => $bodyStyle, "alignment" => $bodyAlignment),
+								array("text" => $rowMain['damageMemoEn'], "style" => $bodyStyle, "alignment" => $bodyAlignment),
+								array("text" => $damSize, "style" => $bodyStyle, "alignment" => $bodyAlignment)
+							);
+
+							$data[] = $var; // input the data from the loop into the data array
+
+							$totalTableAmount += $rowMain['invoiceValue']; // add up the amount
+						}
+						 // after loop is finished addd the total amount to data
+						$varTotalAmount = array(
+								array("text" => "TOTAL", "style" => $bodyStyle, "alignment" => "right", "colSpan"=> "6"),
+								array("text" => "", "style" => $bodyStyle, "alignment" => $bodyAlignment),
+								array("text" => "", "style" => $bodyStyle, "alignment" => $bodyAlignment),
+								array("text" => "", "style" => $bodyStyle, "alignment" => $bodyAlignment),
+								array("text" => "", "style" => $bodyStyle, "alignment" => $bodyAlignment),
+								array("text" => "", "style" => $bodyStyle, "alignment" => $bodyAlignment),
+								array("text" => toCurrencyAmount($lastKnownCurrency, $totalTableAmount), "style" => $bodyStyle, "alignment" => $bodyAlignment),
+								array("text" => "", "style" => $bodyStyle, "alignment" => $bodyAlignment, "colSpan"=> "3"),
+								array("text" => "", "style" => $bodyStyle, "alignment" => $bodyAlignment),
+								array("text" => "", "style" => $bodyStyle, "alignment" => $bodyAlignment)
+							);
+						$data[] = $varTotalAmount;
+					
+					?>
+					
 					<script type="text/javascript">
 						$(document).ready(function(){
+							
 							$('#downloadTablePdfBtn').click(function() {
 						
-								var th_damageId = { text: 'DAMAGE ID', style: 'th', alignment: 'center'};
-								var th_model = { text: 'MODEL', style: 'th', alignment: 'center'};
-								var th_spec = { text: 'SPEC', style: 'th', alignment: 'center'};
-								var th_guar = { text: 'GUARANTEE No.', style: 'th', alignment: 'center'};
-								var th_invoiceNo = { text: 'INVOICE No.', style: 'th', alignment: 'center'};
-								var th_invoiceDate = { text: 'DATE', style: 'th', alignment: 'center'};
-								var th_invoiceValue = { text: 'INVOICE VALUE', style: 'th', alignment: 'center'};
-								var th_orderNo = { text: 'ORDER No.', style: 'th', alignment: 'center'};
-								var th_ref = { text: 'REFERENCE', style: 'th', alignment: 'center'};
-								var th_damageSize = { text: 'DAMAGE SIZE', style: 'th', alignment: 'center'};
-								
-								var td_damageId = { text: 'FLN72-151202-38', style: 'td', alignment: 'center'};
-								var td_model = { text: '361-1 SPE', style: 'td', alignment: 'center'};
-								var td_spec = { text: 'special inlet hole', style: 'td', alignment: 'center'};
-								var td_guar = { text: '302001400042000', style: 'td', alignment: 'center'};
-								var td_invoiceNo = { text: 'JP71814.', style: 'td', alignment: 'center'};
-								var td_invoiceDate = { text: '04.09.2015', style: 'td', alignment: 'center'};
-								var td_invoiceValue = { text: '€ 292.41', style: 'td', alignment: 'center'};
-								var td_orderNo = { text: '2456', style: 'td', alignment: 'center'};
-								var td_ref = { text: 'Defective Finish on overflow hole rim', style: 'td', alignment: 'center'};
-								var td_damageSize = { text: '40mm~', style: 'td', alignment: 'center'};
-								
-								var headerTitle = { text: 'TAIYO KANAMONO JAPAN [ <?php echo $recMasterMakerName; ?> ] <?php echo $recMasterDate; ?>', colSpan: 10, style: 'th', alignment: 'left'};
-								
-								var test23 =  [td_damageId, td_model, td_spec, td_guar, td_invoiceNo, td_invoiceDate, td_invoiceValue, td_orderNo, td_ref, td_damageSize] ;
-								
-								var test3 = function(){
-							
-									for (var property in test23) {
-												if (test23.hasOwnProperty(property)) {
-													alert(property);
-												}
-											}
-								}
-								test3();
-								var docDefinition = {
+								var headerTitle = { text: 'TAIYO KANAMONO JAPAN ', colSpan: 2, style: 'th', alignment: 'left'};
+			
+								var externalDataRetrievedFromServer = jQuery.parseJSON( '<?php echo json_encode($data) ?>' ); // parse the JSON data and put into object properties
+
+								var dd = {
 									//page size
 									pageSize: 'A4',
 
 									// default we use portrait, you can change it to landscape
 									pageOrientation: 'landscape',
-									
-									content: [
-									{
-									  table: {
-										// headers are automatically repeated if the table spans over multiple pages
-										// you can declare how many rows should be treated as headers
-										
-										widths: [ 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto' ],
-										headerRows: 2,
-	
-										body: [
-											[ headerTitle, {}, {}, {}, {}, {}, {}, {}, {}, {} ],
-											[ th_damageId, th_model, th_spec, th_guar, th_invoiceNo, th_invoiceDate, th_invoiceValue, th_orderNo, th_ref, th_damageSize ],
-											[ td_damageId, td_model, td_spec, td_guar, td_invoiceNo, td_invoiceDate, td_invoiceValue, td_orderNo, td_ref, td_damageSize  ]
-											
-										] // end of table body
-									} // end of table
-									}
-									], // end of content
-									styles: {
-										th: {
-											fontSize: 9,
-											bold: true
-										},
-										td: {
-											fontSize: 9,
-											bold: false
+
+									// [left, top, right, bottom] or [horizontal, vertical] or just a number for equal margins
+									pageMargins: [ 20, 30, 20, 30 ],
+
+									content: [ {
+										table: { 
+											widths: [ 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto' ],
+											headerRows: 2,
+											body: externalDataRetrievedFromServer
 										}
-									}
-								}; // end of definition
-								
-								
-								 // download the PDF (temporarily Chrome-only)
- 								pdfMake.createPdf(docDefinition).download('optionalName.pdf');
-								
-							}); // end of click function
-							
-							$('#testdownloadTablePdfBtn').click(function() {
-						
-						
-						//EXAMPLE FOR PROGRAMICALLY GETTING DATA
-						var headerTitle = { text: 'TAIYO KANAMONO JAPAN [ <?php echo $recMasterMakerName; ?> ] <?php echo $recMasterDate; ?>', colSpan: 10, style: 'th', alignment: 'left'};
-						//alert (headerTitle);
-								
-						var externalDataRetrievedFromServer = [
-							{ name: 'Bartek', age: 34, style: 'header'  },
-							{ name: 'John', age: 27,  style: 'header' },
-							{ name: 'Elizabeth', age: 30,  style: 'header' }
-						];
-								
-						var testexternalDataRetrievedFromServer = <?php echo json_encode($pdfExportArray) ?>;
-						$.each(testexternalDataRetrievedFromServer, function(key, value) {
-							console.log('stuff : ' + key + ", " + value);
-						});
-						
-						function buildTableBody(data, columns) {
-							var body = [];
-							
-							body.push(columns);
 
-							data.forEach(function(row) {
-								var dataRow = [];
-
-								columns.forEach(function(column) {
-									dataRow.push(row[column].toString());
-								})
-								
-								body.push(dataRow);
-							});
-							return body;
-						}
-
-						function table(data, columns) {
-							
-							return {
-								table: {
-									headerRows: 2,
-									body: buildTableBody(data, columns)
+									}],
+									styles: {
+											header: {
+												fontSize: 9,
+												bold: true
+											},
+											subheader: {
+												fontSize: 9,
+												bold: false
+											}
+										}
 								}
-							};
-							
-						}
 
-						var dd = {
-							//page size
-							pageSize: 'A4',
-
-							// default we use portrait, you can change it to landscape
-							pageOrientation: 'landscape',
-							
-							content: [
+								// download the PDF (temporarily Chrome-only)
+								pdfMake.createPdf(dd).download('TAIYO KANAMONO JAPAN <?php echo $currentClaimDate;?>.pdf');
 								
-								table(externalDataRetrievedFromServer, ['name', 'age', 'style'])
-							],
-							styles: {
-									header: {
-										fontSize: 5,
-										bold: true
-									},
-									subheader: {
-										fontSize: 5,
-										bold: false
-									}
-								}
-						}
-						
-						// download the PDF (temporarily Chrome-only)
- 						pdfMake.createPdf(dd).download('testname.pdf');
-						
 							}); // END OF test CLICK
 															
 								

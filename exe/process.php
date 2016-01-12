@@ -212,7 +212,7 @@ function rename_if_free($fileNew, $fileOld) {
 		header('location: ../index.php?cid='.$cid); // go back to index.
 		
 	} else if($action == "addcomment"){
-		debugger();
+		//debugger();
 		$recId = $_POST['recordBlockId']; // record block id No.
 		$damageId =  $_POST['damageId_'.$recId];
 		$modelNo = $_POST['modelNo_'.$recId];
