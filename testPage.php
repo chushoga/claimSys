@@ -143,6 +143,21 @@ $(document).ready( function() {} );
 
 
 <br><br><hr><br><br>
+	<?php 
+	$master_pendingNumber = 0;
+	echo "<form method='post' action='exe/changeRecordStatus.php'>
+							      <input type='hidden' name='cid' value='1'>";
+							if($master_pendingNumber == 0){
+								echo "<input type='radio' name='gender' value='test1' >PENDING1";
+								echo "<input type='radio' name='gender' value='test2'>COMPLETE1";
+							} else {
+								echo "<input type='radio' name='gender' value='0' >PENDING2";
+								echo "<input type='radio' name='gender' value='1'>COMPLETE2";
+								}
+							echo "</select>";
+							
+							echo "</form>
+	?>
 <br><br><hr><br><br>
 <div id='contents'></div>
 <button id='addBtn'>ADD DATA HERE</button>

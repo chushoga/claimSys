@@ -13,9 +13,12 @@
 include_once '/master/config.php'; ?>
 				<script type="text/javascript">
 					$(document).ready(function() {
-
-						// dialogue boxes
-
+						
+						
+						/* ******************************************************
+						** DIALOG BOXES **
+						** for popup boxes
+						****************************************************** */
 						$(function() {
 							var dialogNewClaim;
 							var dialogListRecords;
@@ -23,6 +26,7 @@ include_once '/master/config.php'; ?>
 							var dialogEditFiles;
 							var dialogTableView;
 							var dialogDownloadOptions;
+							var dialogMasterOptions;
 
 							dialogNewClaim = $("#dialogNewClaim").dialog({
 								autoOpen: false,
@@ -35,7 +39,8 @@ include_once '/master/config.php'; ?>
 							});
 							dialogUsers = $("#dialogUsers").dialog({
 								autoOpen: false,
-								modal: true
+								modal: true,
+								width: 330
 							});
 							dialogEditFiles = $("#dialogEditFiles").dialog({
 								autoOpen: false,
@@ -50,6 +55,11 @@ include_once '/master/config.php'; ?>
 								autoOpen: false,
 								modal: true,
 								height: 340
+							});
+							dialogMasterOptions = $("#dialogMasterOptions").dialog({
+								autoOpen: false,
+								modal: true,
+								width: 340
 							});
 							
 							
@@ -75,6 +85,8 @@ include_once '/master/config.php'; ?>
 							});
 
 							// edit files dialogue box
+							
+							
 							$(".dialogEditFilesBtn").click(function() {
 
 								dialogEditFiles.dialog("open"); // open the dialog box
@@ -95,37 +107,41 @@ include_once '/master/config.php'; ?>
 
 							});
 							
+							// open table view
+							$("#dialogMasterOptionsBtn").click(function() {
+								dialogMasterOptions.dialog("open");
+							});
+							
 							// save images to pdf
 							$('#downloadBtn').click(function() {
 									dialogDownloadOptions.dialog("open");
-								/*
-									var doc = new jsPDF();
-									doc.text(20, 20, 'Hello world!');
-									doc.text(20, 30, 'This is client-side Javascript, pumping out a PDF.');
-									doc.addPage();
-									doc.text(20, 20, 'Do you like that?');
-
-									doc.save('Test.pdf');
-								*/
+							
 							});
 							
 						});
 
-						
-
-						//change input to uppercase
+						/* ******************************************************
+						** CHANGE TO UPPERCASE **
+						** change maker name input to uppercase automatically
+						** when making a new record and inputing name name
+						****************************************************** */
 						$('#makerName').keyup(function() {
 							this.value = this.value.toUpperCase();
 						});
 
-						// ---------------
-
-						// reload page button
+						/* ******************************************************
+						** [onClick] RELOAD PAGE **
+						** on click reload the page (same as pressing the F5 key)
+						****************************************************** */
 						$('.refreshBtn').click(function() {
 							location.reload();
 						});
 
-						//BUTTON CLICK CODE
+						/* ******************************************************
+						** [onClick] ADD RECORD ROW BUTTON **
+						** on click add a new row to the current record must and
+						** reload the page to get input boxes
+						****************************************************** */
 						$('.addRecord').click(function() {
 							addRecord();
 
@@ -141,7 +157,8 @@ include_once '/master/config.php'; ?>
 								}
 							});
 						});
-
+						
+						// addRecord function start
 						var counter = 1;
 
 						function addRecord() {
@@ -151,11 +168,45 @@ include_once '/master/config.php'; ?>
 							$(".additionalRecords").append(obj);
 							counter++;
 						}
+						// addRecord close
 
-						// ----------------------------------------------------------------------------------------------------------------
-						// Delete record block and folder with images and files inside
-						// ----------------------------------------------------------------------------------------------------------------
+						/* ******************************************************
+						** [onClick] DELETE RECORD mainBLOCK **
+						** on click Delete record main record and folder with images
+						** and files inside (remove CID)
+						****************************************************** */
+						$(document).on('click', "#removeCid", function() {
+							var cid = $("#cidHidden").val();
 
+							$('<div></div>').appendTo('body')
+								.html('<div><h6 style="color: red;"><i class="fa fa-exclamation-triangle"></i> Delete this claim [ ' + cid + ' ] and all its images, records and files?</h6></div>')
+								.dialog({
+									modal: true,
+									title: 'Delete Record Block',
+									zIndex: 10000,
+									autoOpen: true,
+									width: 'auto',
+									resizable: false,
+									buttons: {
+										Yes: function() {
+											$(this).dialog("close");
+											$(location).attr('href', 'exe/processRemoveRecord.php?cid=' + cid)
+										},
+										No: function() {
+											$(this).dialog("close");
+										}
+									},
+									close: function(event, ui) {
+										$(this).remove();
+									}
+								});
+						});
+
+						/* ******************************************************
+						** [onClick] DELETE RECORD sub-BLOCK **
+						** on click Delete record sub-block and folder with images
+						** and files inside (remove RID)
+						****************************************************** */
 						$(document).on('click', ".removeRecord", function() {
 							var rid = this.id;
 							var cid = $("#cidHidden").val();
@@ -201,50 +252,30 @@ include_once '/master/config.php'; ?>
 
 						});
 
-						// ----------------------------------------------------------------------------------------------------------------
-
-						// ----------------------------------------------------------------------------------------------------------------
-						// Delete record and folder with images and files inside
-						// ----------------------------------------------------------------------------------------------------------------
-
-						$(document).on('click', "#removeCid", function() {
-							var cid = $("#cidHidden").val();
-
-							$('<div></div>').appendTo('body')
-								.html('<div><h6 style="color: red;"><i class="fa fa-exclamation-triangle"></i> Delete this claim [ ' + cid + ' ] and all its images, records and files?</h6></div>')
-								.dialog({
-									modal: true,
-									title: 'Delete Record Block',
-									zIndex: 10000,
-									autoOpen: true,
-									width: 'auto',
-									resizable: false,
-									buttons: {
-										Yes: function() {
-											$(this).dialog("close");
-											$(location).attr('href', 'exe/processRemoveRecord.php?cid=' + cid)
-										},
-										No: function() {
-											$(this).dialog("close");
-										}
-									},
-									close: function(event, ui) {
-										$(this).remove();
-									}
-								});
-						});
-
-						// ----------------------------------------------------------------------------------------------------------------
-
-						// change color if not saved
+						/* ******************************************************
+						** [onInput type=text] NOT SAVED COLOR CHANGE **
+						** on data input change change the color to red
+						** so that the user can tell if the record needs to be
+						** or is saved.
+						****************************************************** */
 						$('[type=text]').on("input", function() {
 							$('#recordHeaderTop').css("background", "red");
 						});
+						
+						/* ******************************************************
+						** [onChange type=select] NOT SAVED COLOR CHANGE **
+						** on data input change change the color to red
+						** so that the user can tell if the record needs to be
+						** or is saved.
+						****************************************************** */
 						$('select').on("change", function() {
 							$('#recordHeaderTop').css("background", "red");
 						});
 
-
+						/* ******************************************************
+						** FANCYBOX LIGHTBOX GALLERY OPTIONS **
+						** options to set up lightbox gallery
+						****************************************************** */
 						// Fancybox lightbox gallery
 						$(".fancybox").fancybox({
 							prevEffect: 'none',
@@ -257,14 +288,30 @@ include_once '/master/config.php'; ?>
 							}
 						});
 
-						// Button tooltip
+						/* ******************************************************
+						** TOOLTIPS **
+						** view tooltips on hover in the #messageBox (large BTN)
+						****************************************************** */
 						$(".btnLarge").hover(function() {
 							$("#messageBox").toggle(); // toggle message box
 							$("#messageBox").text(""); // reset the text
 							$("#messageBox").text($(this).attr('data-tooltip')); // add the info of from the title
 						});
+						
+						/* ******************************************************
+						** TOOLTIPS **
+						** view tooltips on hover in the #messageBox (small BTN)
+						****************************************************** */
+						$(".btnSmall").hover(function() {
+							$("#messageBox").toggle(); // toggle message box
+							$("#messageBox").text(""); // reset the text
+							$("#messageBox").text($(this).attr('data-tooltip')); // add the info of from the title
+						});
 
-						// scrollbar initalization
+						/* ******************************************************
+						** SCROLLBAR **
+						** scrollbar initalization set theme here
+						****************************************************** */
 						$(".customScrollbar").mCustomScrollbar({
 							theme: "dark-thin"
 						});
@@ -482,31 +529,36 @@ include_once '/master/config.php'; ?>
 									<i class="fa fa-search fa-stack-1x fa-inverse btnLargeText"></i>
 								</span>
 										</a>
-
+<?php
+											if($recMasterId == ""){
+											} else {
+												echo"
 										<!-- STATS -->
 										<a href='#' id='' class='btnLarge' style='float: left;' data-tooltip='View Stats'>
-											<span class="btn fa-stack fa-lg" style=''>
-									<i class="fa fa-square fa-stack-2x"></i>
-									<i class="fa fa-pie-chart fa-stack-1x fa-inverse btnLargeText"></i>
-								</span>
+											<span class='btn fa-stack fa-lg' style=''>
+												<i class='fa fa-square fa-stack-2x'></i>
+												<i class='fa fa-pie-chart fa-stack-1x fa-inverse btnLargeText'></i>
+											</span>
 										</a>
 
 										<!-- DOWNLOAD -->
 										<a href='#' id='downloadBtn' class='btnLarge' style='float: left;' data-tooltip='Download PDF, EXEL, ZIP all'>
-											<span class="btn fa-stack fa-lg" style=''>
-									<i class="fa fa-square fa-stack-2x"></i>
-									<i class="fa fa-cloud-download fa-stack-1x fa-inverse btnLargeText"></i>
-								</span>
+											<span class='btn fa-stack fa-lg' style=''>
+												<i class='fa fa-square fa-stack-2x'></i>
+												<i class='fa fa-cloud-download fa-stack-1x fa-inverse btnLargeText'></i>
+											</span>
 										</a>
 
 										<!-- TABLE VIEW -->
 										<a href='#' id='dialogTableViewBtn' class='btnLarge' style='float: left;' data-tooltip='Settings'>
-											<span class="btn fa-stack fa-lg" style=''>
-									<i class="fa fa-square fa-stack-2x"></i>
-									<i class="fa fa-table fa-stack-1x fa-inverse btnLargeText"></i>
-								</span>
+											<span class='btn fa-stack fa-lg' style=''>
+												<i class='fa fa-square fa-stack-2x'></i>
+												<i class='fa fa-table fa-stack-1x fa-inverse btnLargeText'></i>
+											</span>
 										</a>
-
+										";
+											}
+?>
 										<!-- USERS -->
 										<a href='#' id='dialogUsersBtn' class='btnLarge' style='float: left;' data-tooltip='Select Users'>
 											<span class="btn fa-stack fa-lg" style=''>
@@ -535,9 +587,34 @@ include_once '/master/config.php'; ?>
 								$recMasterDate = $rowMaster['date'];
 								$recMasterEditedBy = $rowMaster['editedBy'];
 								$modified = $rowMaster['modified'];
+								$master_pending = $rowMaster['status'];
+								$master_pendingNumber = $rowMaster['status'];
+								
+								$master_pending = ""; // pending, accepted, rejected, photo requested
+								
+								switch($rowMaster['status']){
+									case 0:
+										$master_pending = "PENDING <i class='fa fa-clock-o' style=''></i>";
+										break;
+									case 1:
+										$master_pending = "COMPLETE <i class='fa fa-check' style=''></i>";
+										break;
+								}
 							}
 							
-							echo "<div id='recordHeaderTop' style=''><span style='margin-left: 5px;'>TAIYO KANAMONO JAPAN [ $recMasterMakerName ] $recMasterDate PENDING... <i class='fa fa-hourglass-half' style=''></i></span><span id='userNameShow' style='float: right; margin-right: 10px;'></span></div>";
+								echo "
+								<a href='#' id='dialogMasterOptionsBtn' class='btnSmall' style='display: block; float: right; font-size: 9px; line-height: 21px; margin-right: 7px;' data-tooltip='Master Options'>
+									<span class='btn fa-stack fa-lg' style='color: #303030'>
+										<i class='fa fa-circle fa-stack-2x'></i>
+										<i class='fa fa-wrench fa-stack-1x fa-inverse btnSmallText'></i>
+									</span>
+								</a>
+							";
+							
+							echo "<div id='recordHeaderTop' style=''><span style='margin-left: 5px; float: left;'>TAIYO KANAMONO JAPAN [ $recMasterMakerName ] $recMasterDate ($master_pending) </span> ";
+							
+							
+							echo "<span id='userNameShow' style='float: right; margin-right: 10px;'></span></div>";
 
 							echo "<div id='mainWindowBody' class='customScrollbar'>";
 							//echo "<form>";
@@ -836,11 +913,11 @@ include_once '/master/config.php'; ?>
 										});
 
 									}
-
-
-									//showComment();
+									
 
 									
+									//showComment();
+
 									var saveMe_<?php echo $records_id; ?> = function() {
 
 										var recordBlockId = "<?php echo $records_id;?>";
@@ -917,119 +994,7 @@ include_once '/master/config.php'; ?>
 										}
 									};
 									
-									/*
 									
-									$('#downloadPdfBtn111<?php echo $records_id; ?>').click(function() {
-										
-										// Because of security restrictions, getImageFromUrl will
-										// not load images from other domains.  Chrome has added
-										// security restrictions that prevent it from loading images
-										// when running local files.  Run with: chromium --allow-file-access-from-files --allow-file-access
-										// to temporarily get around this issue.
-										var getImageFromUrl = function(url, callback) {
-
-
-											var img = new Image, data, ret={data: null, pending: true};
-
-											img.onError = function() {
-												throw new Error('Cannot load image: "'+url+'"');
-											}
-											img.onload = function() {
-												var canvas = document.createElement('canvas');
-												document.body.appendChild(canvas);
-												canvas.width = img.width;
-												canvas.height = img.height;
-
-												var ctx = canvas.getContext('2d');
-												ctx.drawImage(img, 0, 0);
-												// Grab the image as a jpeg encoded in base64, but only the data
-												data = canvas.toDataURL('image/jpeg').slice('data:image/jpeg;base64,'.length);
-												// Convert the data to binary form
-												data = atob(data)
-												document.body.removeChild(canvas);
-
-												ret['data'] = data;
-												ret['pending'] = false;
-												if (typeof callback === 'function') {
-													callback(data);
-												}
-											}
-											img.src = url;
-
-											return ret;
-										}
-
-										// Since images are loaded asyncronously, we must wait to create
-										// the pdf until we actually have the image data.
-										// If we already had the jpeg image binary data loaded into
-										// a string, we create the pdf without delay.
-										var createPDF = function(imgData) {
-											
-											var recordBlockId = "<?php echo $records_id;?>";
-
-											var damageId = "<?php echo $records_id_dmg;?>";
-											var modelNo = "<?php echo $records_modelNo;?>";
-											var headerMemo = damageId + " [ " + modelNo + " ]";
-
-											var imgWidth = 450;
-											var imgHeight = 338.8235294117647;
-											
-											var img1X = 60;
-											var img1Y = 50;
-											
-											var img2X = 60;
-											var img2Y = 100+imgHeight;
-
-											var doc = new jsPDF("p", "pt", "a4");
-
-											doc.text(180, 30, headerMemo); // add the header title
-
-											doc.addImage(imgData, 'JPEG', img1X, img1Y, imgWidth, imgHeight); // first image
-
-											doc.addImage(imgData, 'JPEG', img2X, img2Y, imgWidth, imgHeight); // second image
-											//doc.addImage(imgData, 'JPEG', 70, 10, 100, 120);
-											
-											doc.addPage();
-											doc.text(180, 30, headerMemo);
-											doc.text(30, 60, 'Do you like that?');
-											
-											
-											// Output as Data URI
-											doc.output('datauri');
-
-										}
-
-										getImageFromUrl('recordFiles/20/507/IMG_1623.jpg', createPDF);
-										getImageFromUrl('recordFiles/20/507/IMG_1624.jpg', createPDF);
-									});
-									*/
-
-									// -------------------------------------------------------------------------------
-									
-									/*
-									// save images to pdf
-										$('#downloadPdfBtn1111<?php echo $records_id; ?>').click(function() {
-											
-											var recordBlockId = "<?php echo $records_id;?>";
-											var cid = "&cid=" + <?php echo $recMasterId;?>;
-											
-											var damageId = "<?php echo $records_id_dmg;?>";
-											var modelNo = "<?php echo $records_modelNo;?>";
-											//var tformNo = "<?php echo $records_tformNo;?>";
-											
-											var headerMemo = damageId + " [ " + modelNo + " ]";
-
-												var doc = new jsPDF();
-											
-												doc.text(70, 15, headerMemo);
-												doc.addPage();
-												doc.text(20, 20, headerMemo);
-												doc.text(30, 30, 'Do you like that?');
-
-												doc.save(recordBlockId+'.pdf');
-	
-										});
-										*/
 								// *************************************************************************************************************
 									
 									
@@ -1075,20 +1040,7 @@ include_once '/master/config.php'; ?>
 										<?php
 											}
 										?>
-										//console.warn(markers[2]);
-										//console.log(sources);
-										
-										/*
-										var sources = {
-											
-											cloud_Image: 'recordFiles/20/548/IMG_1813.jpg',
-											cloud_Image2: 'recordFiles/20/548/IMG_1816.jpg',
-											database_Image:'recordFiles/20/548/IMG_1814.jpg',
-											base_image: 'img/base.jpg'
-										};
-										*/
-										
-
+									
 										function loadImages(sources, callback) {
 												
 											var images = {};
@@ -1263,54 +1215,7 @@ include_once '/master/config.php'; ?>
 												// -------------------------------------------------------------------
 												// ------ END LOOP HERE ----------------------------------------------
 												// -------------------------------------------------------------------
-												
-												//console.warn("total images: " + numCounter + " | page count: " + totalPages);
-												
-												
-												/*
-												context.drawImage(images.base_image,0,0, 1260, 1782); // draw base underlaying image, in this case white streched to each corner.
-												
-												context.drawImage(images.customkey0, 175, paddingTop, images.customkey0.width * ratioSize, (images.customkey0.width*ratioSize)/aspectRatio);
-												context.drawImage(images.customkey1, 175, 950, 950, 950/aspectRatio);
-
-												//now grab the one image data for jspdf
-												//imgData = canvas.toDataURL('data:image/jpeg');
 											
-												imgData = canvas.toDataURL('image/jpeg').slice('data:image/jpeg;base64,'.length);
-												// Convert the data to binary form
-												imgData = atob(imgData);
-												
-												// -------------------------------------------------
-												// second loop for second page
-												context.drawImage(images.base_image,0,0, 1260, 1782); // draw base underlaying image, in this case white streched to each corner.
-												
-												context.drawImage(images.customkey2, 175, paddingTop, images.customkey2.width * ratioSize, (images.customkey2.width*ratioSize)/aspectRatio);
-												context.drawImage(images.customkey3, 175, 950, 950, 950/aspectRatio);
-												
-												markers[2] = canvas.toDataURL('image/jpeg').slice('data:image/jpeg;base64,'.length);
-												// Convert the data to binary form
-												markers[2] = atob(markers[2]);
-												
-												//--------------------------------------------------
-												
-												//and lose the canvas when you're done
-												document.body.removeChild(canvas);
-										
-											
-											var doc = new jsPDF();
-												
-												doc.addImage(imgData, 'JPEG', 0, 0, 210, 297); // adds the image up top
-												
-												doc.text(70, 15, headerMemo);
-											
-											    doc.addPage();
-											
-												doc.addImage(markers[2], 'JPEG', 0, 0, 210, 297); // adds the image up top
-											
-												doc.text(70, 15, headerMemo);
-																						
-											doc.save(damageId+'.pdf');
-*/
 											});
 											
 											
@@ -1351,12 +1256,7 @@ include_once '/master/config.php'; ?>
 						if($recMasterId == ""){
 							
 						} else {
-							echo "<a href='#' id='removeCid' class='btnSmall' style='display: block; float: left;'>
-									<span class='btn fa-stack fa-lg' style='color: #BF2C2C'>
-										<i class='fa fa-square fa-stack-2x'></i>
-										<i class='fa fa-trash fa-stack-1x fa-inverse btnSmallText'></i>
-									</span>
-								</a>
+							echo "
 								total [<span id='totalPrice'></span>] | accepted [€$acceptedValue] | rejected [€$rejectedValue] | totalpending [€$pendingValue] | LAST EDITED BY: $recMasterEditedBy ON: $modified 
 							";
 						}
@@ -1365,442 +1265,18 @@ include_once '/master/config.php'; ?>
 						</div>
 				</div>
 
+			
+				<!-- //////////////////////// -->
 				<!-- DIALOGE BOXES START HERE -->
-
-				<!-- NEW CLAIM -->
-				<div id="dialogNewClaim" title="New Claim Creation" style='font-family: monospace; font-size: 13px;'>
-					<form method='post' action='exe/addNewClaim.php'>
-						<table id='addNewClaimPopup'>
-							<tr>
-								<th>
-									MAKER NAME:
-								</th>
-								<td>
-									<input type='text' name='makerName' placeholder='MakerNameHere' id='makerName'>
-								</td>
-							</tr>
-							<tr>
-								<th>
-									DATE:
-								</th>
-								<td>
-									<input type='date' name='date'>
-								</td>
-							</tr>
-							<tr>
-								<th colspan='2' style=''>
-									<input type='submit' value='ADD NEW RECORD' style='font-family: monospace; padding-top: 5px; padding-bottom: 5px;'>
-								</th>
-							</tr>
-						</table>
-					</form>
-				</div>
-
-				<!-- LIST RECORDS -->
-				<div id="dialogListRecords" class='customScrollbar' title="All Records List" style=''>
-					<?php
-						$conditionColor = "";
-						$conditionIcon = "";
-						$conditionText = "";
-						$condition = "";
+				<!-- //////////////////////// -->
+				<?php include_once("dialog.php"); ?>
+				<!-- DIALOGE BOXES END HERE -->
 				
-						$result = mysql_query("SELECT * FROM `recordmaster`");
-						while($row = mysql_fetch_assoc($result)){
-							$recId = $row['id'];
-							$currentMakerName = $row['makerName'];
-							$currentClaimDate = $row['date'];
-							$condition = $row['status'];
-							
-							switch($condition){
-								case "0":
-									$conditionColor = "color: #EFF545;";
-									$conditionIcon = "fa fa-hourglass-end";
-									$conditionText = "PENDING...";
-									break;
-								case "1": 
-									$conditionColor = "color: #04D61D;";
-									$conditionIcon = "fa fa-check-square-o";
-									$conditionText = "COMPLEATE";
-									break;
-								default:
-									$conditionColor = "color: #CCCCCC;";
-									$conditionIcon = "fa fa-question-circle";
-									$conditionText = "UNKNOWN";
-							}
-							
-							echo "
-							<a href='index.php?cid=$recId'>
-							<div class='recordBlock' style='overflow: hidden;'>
-								<i class='$conditionIcon' style='$conditionColor'></i> 
-								 $currentMakerName $currentClaimDate $conditionText
-							</div>
-							</a>
-							";
-							
-						}
-					?>
-				</div>
-				<!-- USERS -->
-				<div id="dialogUsers" class='customScrollbar' title="Choose User" style='font-family: monospace; font-size: 13px;'>
-					<?php
-					echo "<div class='userBlock' style='overflow: hidden;'>";
-					
-					echo "
-						<a href='#'>
-							<div style='width: 50px; height: 50px; float: left; text-align: center;'>
-							
-							<a href='#' id='logout' class='btnSmall' data-tooltip='logout' >
-								<span class='btn fa-stack fa-lg' >
-									<i class='fa fa-square fa-stack-2x' ></i>
-									<i class='fa fa-power-off fa-stack-1x fa-inverse btnSmallText' ></i>
-								</span>
-							</a>
-							<br>
-							LOGOUT
-							</div>
-						</a>
-						";
-					
-					$result = mysql_query("SELECT * FROM `users`");
-					while($row = mysql_fetch_assoc($result)){
-						$userId = $row['id'];
-						$userName = $row['userName'];
-						
-						echo "
-						<a href='#'>
-							<div style='width: 50px; height: 50px; float: left; text-align: center;'>
-							
-							<a href='#' id='' class='userNameChoice btnSmall' data-tooltip='$userName' >
-								<span class='btn fa-stack fa-lg' >
-									<i class='fa fa-square fa-stack-2x' ></i>
-									<i class='fa fa-user fa-stack-1x fa-inverse btnSmallText' ></i>
-								</span>
-							</a>
-							<br>
-							$userName
-							</div>
-						</a>
-						";
-
-					}
-					echo "<div class='clear'></div>";
-					echo "</div>";
-					?>
-				</div>
-
-				<!-- EDIT FILES -->
-				<div id="dialogEditFiles" class='customScrollbar' title="Edit Files" style='font-family: monospace; font-size: 13px;'>
-					<?php
-					echo "<div class='editFilesBlock' style='overflow: hidden;'>";
-					echo "</div>";
-					?>
-				</div>
-			
-				<!-- DOWNLOAD OPTIONS -->
-				<div id="dialogDownloadOptions" class='customScrollbar' title="Table View With Download Options" style='font-family: monospace; font-size: 13px;'>
-					<?php
-					echo "<div class='downloadOptionsBlock' style='overflow: hidden;'>";
-					
-						echo "<div class='optionsBoxWrapper'>";
-							echo "
-								<a href='#' id='dialogPdfDownloadBtn' class='btnXLarge' style='float: left;' data-tooltip='Download Options'>
-									<span class='btn fa-stack fa-lg' style=''>
-										<i class='fa fa-cloud fa-stack-2x'></i>
-										<i class='fa fa-file-pdf-o fa-stack-1x fa-inverse btnXLargeText'></i>
-									</span>
-								</a>";
-							echo "<h1>PDF DOWNLOAD</h1>";
-						echo "</div><br>";
-						echo "<div class='optionsBoxWrapper'>";
-							echo "
-								<a href='#' id='dialogExportBtn' class='btnXLarge' style='float: left;' data-tooltip='Download Options'>
-									<span class='btn fa-stack fa-lg' style=''>
-										<i class='fa fa-cloud fa-stack-2x'></i>
-										<i class='fa fa-file-excel-o fa-stack-1x fa-inverse btnXLargeText'></i>
-									</span>
-								</a>";
-							echo "<h1>EXCEL DOWNLOAD</h1>";
-						echo "</div><br>";
-						echo "<div class='optionsBoxWrapper'>";
-							echo "
-								<a href='#' id='dialogZipDownloadBtn' class='btnXLarge' style='float: left;' data-tooltip='Download Options'>
-									<span class='btn fa-stack fa-lg' style=''>
-										<i class='fa fa-cloud fa-stack-2x'></i>
-										<i class='fa fa-file-archive-o fa-stack-1x fa-inverse btnXLargeText'></i>
-									</span>
-								</a>
-							";
-							echo "<h1>ZIP DOWNLOAD</h1>";
-						echo "</div>";
-					echo "</div>";
-					?>
-				</div>
-			
-			<!-- TABLE FORMAT -->
-				<div id="dialogTableView" class='customScrollbar' title="Table View With Download Options" style='font-family: monospace; font-size: 13px;'>
-					<?php
-					echo "<div class='dialogExportExcel' style=''>";
-					echo "<div id='saveWrapper'>";
-					echo "<table id='customers' style='width: 100%; border: 1px solid black; margin: calc(100% - 10px;); text-align: center;'>";
-					echo "<thead>";
-					echo "<tr><th colspan='10' style='text-align: left; border: 1px solid black;'>TAIYO KANAMONO JAPAN [ $recMasterMakerName ] $recMasterDate</th></tr>";
-					echo "<th style='border: 1px solid black;'>DAMAGE ID</th>";
-					echo "<th style='border: 1px solid black;'>MODEL</th>";
-					echo "<th style='border: 1px solid black;'>SPEC</th>";
-					echo "<th style='border: 1px solid black;'>GUARANTEE No.</th>";
-					echo "<th style='border: 1px solid black;'>INVOICE No.</th>";
-					echo "<th style='border: 1px solid black;'>DATE</th>";
-					echo "<th style='border: 1px solid black;'>INVOICE VALUE</th>";
-					echo "<th style='border: 1px solid black;'>ORDER No.</th>";
-					echo "<th style='border: 1px solid black;'>REFERENCE</th>";
-					echo "<th style='border: 1px solid black;'>DAMAGE SIZE</th>";
-					echo "</thead>";
-					echo "<tbody>";
-					
-					/* QUERY THE TABLE AND GET THE LOOP INFO */
-					
-					$totalCost = 0; // add the total cost in the loop
-					$pdfExportArray = array();
-					
-					$resultMain = mysql_query("SELECT * FROM `records` WHERE `id_recordMaster` = '$recMasterId'");
-							while($rowMain = mysql_fetch_assoc($resultMain)){
-								//set variables for the blocks here.
-								$records_id = $rowMain['id'];
-								$records_id_recordMaster = $rowMain['id_recordMaster'];
-								$records_id_dmg = $rowMain['id_dmg'];
-								$records_modelNo = $rowMain['modelNo'];
-								$records_tformNo = $rowMain['tformNo'];
-								$records_orderNo = $rowMain['orderNo'];
-								$records_spec = $rowMain['spec'];
-								$records_invoiceNo = $rowMain['invoiceNo'];
-								$records_invoiceDate = $rowMain['invoiceDate'];
-								$records_invoiceGntNo = $rowMain['invoiceGntNo'];
-								$records_invoiceCurrency = $rowMain['currency'];
-								$records_invoiceValue = $rowMain['invoiceValue'];
-								$records_damageType = $rowMain['damageType'];
-								$records_damageSize = $rowMain['damageSize'];
-								$records_damageMemo_EN = $rowMain['damageMemoEn'];
-								
-								$pdfExportArray[] = array('name' => $records_id_dmg, 'age' => $records_modelNo); // push data to array to use for pdf export
-								$totalCost += $records_invoiceValue; // set total cost
-								
-								
-								$damSize = "";
-								// check if size is zero
-								if ($rowMain['damageSize'] == "0"){
-									$damSize = "";
-								} else {
-									$damSize = $rowMain['damageSize']."mm";
-								}
-								
-								switch($records_invoiceCurrency){
-								case "0":
-									$curr = "€";
-									break;
-								case "1": 
-									$curr = "$";
-									break;
-								case "2": 
-									$curr = "円";
-									break;
-								default:
-									$curr = "";
-							}
-					
-						echo "<tr>";
-						echo "<td style='border: 1px solid black;'>".$rowMain['id_dmg']."</td>";
-						echo "<td style='text-align: center; border: 1px solid black;'>".$rowMain['modelNo']."</td>";
-						echo "<td style='text-align: center; border: 1px solid black;'>".$rowMain['spec']."</td>";
-						echo "<td style='text-align: center; border: 1px solid black;'>".$rowMain['invoiceGntNo']."</td>";
-						echo "<td style='text-align: center; border: 1px solid black;'>".$rowMain['invoiceNo']."</td>";
-						echo "<td style='text-align: center; border: 1px solid black;'>".$rowMain['invoiceDate']."</td>";
-						echo "<td style='border: 1px solid black; text-align: right;'>".$curr." ".number_format($rowMain['invoiceValue'], 2, '.',',')."</td>";
-						echo "<td style='text-align: center; border: 1px solid black;'>".$rowMain['orderNo']."</td>";
-						echo "<td style='text-align: center; border: 1px solid black;'>".$rowMain['damageMemoEn']."</td>";
-						echo "<td style='text-align: center; border: 1px solid black;'>".$damSize."</td>";
-						echo "</tr>";
-					}
-					echo "<tr><th colspan='6' style='text-align: right;'>TOTAL</th>
-					          <th style='text-align: right; border: 1px solid black;'>".$curr." ".number_format($totalCost, 2, '.',',')."</th>
-							  <th colspan='3'></th>
-							  </tr>";
-					echo "</tbody>";
-					echo "</table>";
-					echo "</div>"; // save wrapper finished
-					//$pdfExportArray =  //test
-					//echo $pdfExportArray;
-					?>
-					<br>
-						<button id='downloadTablePdfBtn'>PDF DOWNLOAD <i style='color: crimson;' class="fa fa-file-pdf-o"></i></button>
-						<a download="<?php echo $currentMakerName." ".$currentClaimDate;?>.xls" href="#" onclick="return ExcellentExport.excel(this, 'saveWrapper', '<?php echo $currentClaimDate;?>');"><button>EXCEL DOWNLOAD <i style='color: green;' class="fa fa-file-excel-o"></i></button></a>
-			
-					<!-- DOWNLOAD PDF SCRIPT -->
-					
-					<?php 
-					
-					/* CURRENCY CONVERTER SUPPORT for EUR, USD, YEN*/
-						function toCurrencyAmount($currency, $amount){
-							switch($currency){
-								case "0":
-									$curr = "€";
-									$amount = number_format($amount, 2, '.', ',');
-									break;
-								case "1": 
-									$curr = "$";
-									$amount = number_format($amount, 2, '.', ',');
-									break;
-								case "2": 
-									$curr = "YEN ";
-									$amount = number_format($amount, 2, '.', ',');
-									break;
-								default:
-									$curr = "";
-									$amount = "";
-							}
-							return $curr.$amount;
-						}
-
-						$totalTableAmount = 0;// total amount
-
-						$data = array();
-
-						$headerStyle = "header";
-						$headerAlignment = "left";
-						$bodyStyle = "subheader";
-						$bodyAlignment = "center";
-						$headerTitle = array(
-							array("text" => "TAIYO KANAMONO JAPAN [$currentMakerName] $currentClaimDate", "style" => $headerStyle, "alignment" => $headerAlignment, "colSpan" => "10"),
-							array("text" => ""),
-							array("text" => ""),
-							array("text" => ""),
-							array("text" => ""),
-							array("text" => ""),
-							array("text" => ""),
-							array("text" => ""),
-							array("text" => ""),
-							array("text" => "")
-						);
-
-						$headerTh = array(
-							array("text" => "DAMAGE ID", "style" => $headerStyle, "alignment" => $bodyAlignment),
-							array("text" => "MODEL", "style" => $headerStyle, "alignment" => $bodyAlignment),
-							array("text" => "SPEC", "style" => $headerStyle, "alignment" => $bodyAlignment),
-							array("text" => "GUARANTEE No.", "style" => $headerStyle, "alignment" => $bodyAlignment),
-							array("text" => "INVOICE No.", "style" => $headerStyle, "alignment" => $bodyAlignment),
-							array("text" => "DATE", "style" => $headerStyle, "alignment" => $bodyAlignment),
-							array("text" => "INVOICE VALUE", "style" => $headerStyle, "alignment" => $bodyAlignment),
-							array("text" => "ORDER No.", "style" => $headerStyle, "alignment" => $bodyAlignment),
-							array("text" => "REFERENCE", "style" => $headerStyle, "alignment" => $bodyAlignment),
-							array("text" => "DAMAGE SIZE", "style" => $headerStyle, "alignment" => $bodyAlignment)
-							);
-
-						$data[] = $headerTitle;
-						$data[] = $headerTh;
-
-						$resultMain = mysql_query("SELECT * FROM `records` WHERE `id_recordMaster` = '$recMasterId'");
-						while($rowMain = mysql_fetch_assoc($resultMain)){
-
-							$damSize = "";
-
-							// check if size is zero
-							if ($rowMain['damageSize'] == "0"){
-								$damSize = "";
-							} else {
-								$damSize = $rowMain['damageSize']."mm";
-							}
-
-							$curr = toCurrencyAmount($rowMain['currency'], $rowMain['invoiceValue']);
-							$lastKnownCurrency = $rowMain['currency'];
-
-							$var = array(
-								array("text" => $rowMain['id_dmg'], "style" => $bodyStyle, "alignment" => $bodyAlignment),
-								array("text" => $rowMain['modelNo'], "style" => $bodyStyle, "alignment" => $bodyAlignment),
-								array("text" => $rowMain['spec'], "style" => $bodyStyle, "alignment" => $bodyAlignment),
-								array("text" => $rowMain['invoiceGntNo'], "style" => $bodyStyle, "alignment" => $bodyAlignment),
-								array("text" => $rowMain['invoiceNo'], "style" => $bodyStyle, "alignment" => $bodyAlignment),
-								array("text" => $rowMain['invoiceDate'], "style" => $bodyStyle, "alignment" => $bodyAlignment),
-								array("text" => $curr, "style" => $bodyStyle, "alignment" => $bodyAlignment),
-								array("text" => $rowMain['orderNo'], "style" => $bodyStyle, "alignment" => $bodyAlignment),
-								array("text" => $rowMain['damageMemoEn'], "style" => $bodyStyle, "alignment" => $bodyAlignment),
-								array("text" => $damSize, "style" => $bodyStyle, "alignment" => $bodyAlignment)
-							);
-
-							$data[] = $var; // input the data from the loop into the data array
-
-							$totalTableAmount += $rowMain['invoiceValue']; // add up the amount
-						}
-						 // after loop is finished addd the total amount to data
-						$varTotalAmount = array(
-								array("text" => "TOTAL", "style" => $bodyStyle, "alignment" => "right", "colSpan"=> "6"),
-								array("text" => "", "style" => $bodyStyle, "alignment" => $bodyAlignment),
-								array("text" => "", "style" => $bodyStyle, "alignment" => $bodyAlignment),
-								array("text" => "", "style" => $bodyStyle, "alignment" => $bodyAlignment),
-								array("text" => "", "style" => $bodyStyle, "alignment" => $bodyAlignment),
-								array("text" => "", "style" => $bodyStyle, "alignment" => $bodyAlignment),
-								array("text" => toCurrencyAmount($lastKnownCurrency, $totalTableAmount), "style" => $bodyStyle, "alignment" => $bodyAlignment),
-								array("text" => "", "style" => $bodyStyle, "alignment" => $bodyAlignment, "colSpan"=> "3"),
-								array("text" => "", "style" => $bodyStyle, "alignment" => $bodyAlignment),
-								array("text" => "", "style" => $bodyStyle, "alignment" => $bodyAlignment)
-							);
-						$data[] = $varTotalAmount;
-					
-					?>
-					
-					<script type="text/javascript">
-						$(document).ready(function(){
-							
-							$('#downloadTablePdfBtn').click(function() {
-						
-								var headerTitle = { text: 'TAIYO KANAMONO JAPAN ', colSpan: 2, style: 'th', alignment: 'left'};
-			
-								var externalDataRetrievedFromServer = jQuery.parseJSON( '<?php echo json_encode($data) ?>' ); // parse the JSON data and put into object properties
-
-								var dd = {
-									//page size
-									pageSize: 'A4',
-
-									// default we use portrait, you can change it to landscape
-									pageOrientation: 'landscape',
-
-									// [left, top, right, bottom] or [horizontal, vertical] or just a number for equal margins
-									pageMargins: [ 20, 30, 20, 30 ],
-
-									content: [ {
-										table: { 
-											widths: [ 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto' ],
-											headerRows: 2,
-											body: externalDataRetrievedFromServer
-										}
-
-									}],
-									styles: {
-											header: {
-												fontSize: 9,
-												bold: true
-											},
-											subheader: {
-												fontSize: 9,
-												bold: false
-											}
-										}
-								}
-
-								// download the PDF (temporarily Chrome-only)
-								pdfMake.createPdf(dd).download('TAIYO KANAMONO JAPAN <?php echo $currentClaimDate;?>.pdf');
-								
-							}); // END OF test CLICK
-															
-								
-					}); // END OF DOC READY FUNCTION
-					</script>
-					
-			</div> <!-- TABLE FORMAT FINISHED -->
-			
-			
+				<!-- //////////////////////// -->
 					
 				</div> <!-- WRAPPER FINISHED -->
 
-				<!-- DIALOGE BOXES END HERE -->
+				
 
 				<!-- PAGE CONTENTS END HERE -->
 		</div>

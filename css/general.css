@@ -90,8 +90,6 @@ a {
 
 
 .btnSmall {
-	width: 26px;
-	height: 26px;
 	font-size: 10px;
 	color: #CFCFCF;
 }
@@ -100,8 +98,7 @@ a {
 	color: #FFF;
 }
 
-.btnSmall i:hover {
-	
+.btnSmall i {
 }
 
 .btnSmall:hover {
@@ -109,8 +106,6 @@ a {
 }
 
 .btnLarge {
-	width: 50px;
-	height: 50px;
 	display: block;
 	color: #CFCFCF;
 }
@@ -119,13 +114,16 @@ a {
 	color: #303030;
 }
 
-.btnLarge i:hover {
+.btnLarge:hover {
+	color: #089BCC;
+}
+
+.btnLarge:hover .btnLargeText{
 	color: #FFF;
 }
 
-.btnLarge:hover {
- color: #089BCC;
-}
+
+
 
 /* ---------- */
 

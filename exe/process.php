@@ -140,6 +140,16 @@ function rename_if_free($fileNew, $fileOld) {
 					}
 				echo "<input type='submit' value='RENAME/DELETE' style='margin-top:10px; text-align: center;'>";
 				echo "</form>";
+				echo "
+					<br><hr><br>
+					<span style='float: right; margin-right: 5px;'>
+						<a href='#' class='removeRecord' id='$recId'> DELETE <i class='fa fa-trash-o'></i></a>
+					</span>
+
+					<span style='float: right; margin-right: 10px;'>
+						<a href='#' class='pdfDownload' id='downloadPdfBtn$recId'>PDF <i class='fa fa-save'></i></a> | 
+					</span>
+					";
 	} else if($action == "renameFiles"){
 		
 		$cid = $_POST['cid'];
