@@ -25,6 +25,12 @@ a {
 	clear: both;
 }
 
+.vertAlignHelper {
+	position: relative;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
 #outterBox{
 	position: absolute;
 	top: 0px;
@@ -38,12 +44,28 @@ a {
 	width: calc(100% - 10px);
 	height: 20px;
 	background-color: #303030;
-	text-align: right;
+	padding-right: 10px;
+}
+
+#codeUsed {
+	float: left;
+	margin-left: 10px;
+}
+
+#copywrite{
 	font-size: 12px;
 	color: #FFFFFF;
 	line-height: 20px;
-	padding-right: 10px;
+	float: right;
 }
+#testedWith{
+	font-size: 12px;
+	color: #FFFFFF;
+	line-height: 20px;
+	float: right;
+	margin-right: 0px;
+}
+
 /* ---------------MAIN WINDOW---------------- */
 #mainWindow {
 	width: 100%;
@@ -280,18 +302,20 @@ DIALOG BOXES
 /*---------------------------------*/
 /* MESSAGE BOX*/
 #messageBox {
-	width: 250px;
+	min-width: 250px;
 	height: 25px;
 	font-family: monospace;
 	font-size: 16px;
 	z-index: 100;
 	position: absolute;
 	top: 15px;
-	left: calc(50% - 125px);
+	left: calc(50% - 135px);
 	background-color: #888;
 	border: 2px solid #CCC;
 	text-align: center;
 	line-height: 25px;
+	padding-left: 5px;
+	padding-right: 5px;
 }
 
 #infoBox {

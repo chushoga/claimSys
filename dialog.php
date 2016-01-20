@@ -298,7 +298,7 @@
 						<a download="<?php echo $currentMakerName." ".$currentClaimDate;?>.xls" href="#" onclick="return ExcellentExport.excel(this, 'saveWrapper', '<?php echo $currentClaimDate;?>');"><button>EXCEL DOWNLOAD <i style='color: green;' class="fa fa-file-excel-o"></i></button></a>
 			
 					<!-- DOWNLOAD PDF SCRIPT -->
-					
+
 					<?php 
 					
 					/* CURRENCY CONVERTER SUPPORT for EUR, USD, YEN*/

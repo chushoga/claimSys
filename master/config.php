@@ -7,6 +7,9 @@
 <!-- JAVASCRIPT START -->
 
 <!-- JS -->
+<!-- ANGULAR JS -->
+<script type="text/javascript" src="<?php echo $path;?>/js/angular.min.js"></script>
+
 <!-- JQUERY JS -->
 <script type="text/javascript" src="<?php echo $path;?>/js/jquery-1.10.2.js"></script>
 <script type="text/javascript" src="<?php echo $path;?>/js/jquery-ui.js"></script>
@@ -62,6 +65,10 @@
 <!-- [ pdfMake ] used for the table pdf export -->
 <script type="text/javascript" src="<?php echo $path;?>/js/pdfMake/pdfmake.min.js"></script>
 <script type="text/javascript" src="<?php echo $path;?>/js/pdfMake/vfs_fonts.js"></script>
+
+<!-- [ excellent export ] ONLOAD MAIN JS START -->
+<script type="text/javascript" src="<?php echo $path;?>/js/onLoad.js"></script>
+<!-- [ excellent export ] ONLOAD MAIN JS CLOSE -->
 
 <?php 
 //SET BASE PAGE FILE NAME:
