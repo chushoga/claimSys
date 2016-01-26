@@ -16,7 +16,7 @@
 									DATE:
 								</th>
 								<td>
-									<input type='date' name='date'>
+									<input type='text' class='datepicker' name='date'>
 								</td>
 							</tr>
 							<tr>

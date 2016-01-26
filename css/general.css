@@ -386,6 +386,21 @@ DIALOG BOXES
 .removeRecord {
 	color: crimson;
 }
+
+.renameForm .renameFormInput {
+	border-top: none; 
+	border-left: none; 
+	border-right: none;
+}
+
+.renameForm .renameFormInput:hover {
+	background-color: skyblue;
+}
+
+.renameForm .renameFormInput:focus {
+	background-color: steelblue;
+	color: white;
+}
 /*---------------------------------*/
 /* Excel EXPORT */
 

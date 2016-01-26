@@ -134,22 +134,22 @@ function rename_if_free($fileNew, $fileOld) {
 						$x = substr($file, strrpos($file, '/') + 1);
 						$i = preg_replace('/\\.[^.\\s]{3,4}$/', '', $x);
 						echo "<i class='fa fa-file-o' style='color: crimson;'></i>
-							<input style='border-top: none; border-left: none; border-right: none;' name='".$x."' value='".$x."'>";
+							<input class='renameFormInput' style='' name='".$x."' value='".$x."'>";
 						echo "<input type='checkbox' name='$x' value='delete'> <i style='color: crimson;' class='fa fa-trash'></i> DEL";
 						echo "<br>";
 					}
 				echo "<input type='submit' value='RENAME/DELETE' style='margin-top:10px; text-align: center;'>";
 				echo "</form>";
-				echo "
+				/*echo "
 					<br><hr><br>
 					<span style='float: right; margin-right: 5px;'>
-						<a href='#' class='removeRecord' id='$recId'> DELETE <i class='fa fa-trash-o'></i></a>
+						<a href='#' class='removeRecord' id='$recId'> DELETE1 <i class='fa fa-trash-o'></i></a>
 					</span>
 
 					<span style='float: right; margin-right: 10px;'>
 						<a href='#' class='pdfDownload' id='downloadPdfBtn$recId'>PDF <i class='fa fa-save'></i></a> | 
 					</span>
-					";
+					";*/
 	} else if($action == "renameFiles"){
 		
 		$cid = $_POST['cid'];

@@ -331,6 +331,13 @@ include_once '/master/config.php'; ?>
 								
 								
 									echo "<div class='clear'></div>";
+								
+									// check if there is D- is set or not
+									if($records_id_dmg == ""){
+										$records_id_dmg = "D-";
+									} else {
+										$records_id_dmg = $records_id_dmg;
+									}
 									echo "
 										<div class='recordBody'>
 											<div class='recordBodyBox'>
