@@ -21,8 +21,6 @@
         message($message, "");
     }
 // -------------------
-//SET NAVI HERE
-	//require_once 'navi.php';
 
 ?>
 </div>
